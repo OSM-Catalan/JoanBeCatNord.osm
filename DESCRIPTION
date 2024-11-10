@@ -1,0 +1,20 @@
+Package: JoanBeCatNord.osm
+Title: Reculls de topònims de la Catalunya Nord per Joan Becat
+Version: 0.0.1
+Authors@R: c(
+        person("Joan", "Maspons", , "joanmaspons@gmail.com", role = c("aut", "cre"),
+            comment = c(ORCID = "0000-0003-2286-8727")),
+        person("Joan", "Becat", , "jbecat@iec.cat", role = c("aut", "cph"))
+    )
+Description: Codi per extreure i usar les dades dels pdf de la revisió de cadastres.
+License: GPL (>= 3)
+URL: https://github.com/OSM-Catalan/JoanBeCatNord.osm, https://joanbecat.cat
+BugReports: https://github.com/OSM-Catalan/JoanBeCatNord.osm/issues
+Depends: 
+    R (>= 3.5)
+Encoding: UTF-8
+Language: ca
+LazyData: true
+LazyDataCompression: xz
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
