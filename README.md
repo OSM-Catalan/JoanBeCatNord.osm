@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# JoanBeCatNord.osm <img src='man/figures/Joan_Becat-osm_logo.svg' align="right" height=110/>
+# JoanBeCatNord.osm <a href="https://osm-catalan.github.io/JoanBeCatNord.osm"><img src='man/figures/logo.svg' align="right" height=110 alt="Web del projecte"/></a>
 
 <!-- badges: start -->
 <!-- badges: end -->
