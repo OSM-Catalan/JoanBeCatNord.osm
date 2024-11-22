@@ -18,7 +18,7 @@ la revisió, participants en la revisió i la referència a l'«Atles toponímic
 Catalogne Nord, ed. Terra Nostra».
 }
 \source{
-Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/becat-cadastre.R}.
+Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/becat_cadastre.R}.
 }
 \examples{
 str(intro_cadastre)

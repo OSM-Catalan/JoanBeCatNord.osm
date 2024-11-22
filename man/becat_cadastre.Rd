@@ -28,7 +28,7 @@ Revisió dels topònims dels cadastres dels municipis de Catalunya Nord feta per
 %%  ~~ If necessary, more details than the __description__ above ~~
 }
 \source{
-Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/becat-cadastre.R}.
+Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/becat_cadastre.R}.
 }
 \examples{
 names(becat_cadastre)

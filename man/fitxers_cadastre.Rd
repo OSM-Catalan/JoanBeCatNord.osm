@@ -23,7 +23,7 @@ La url del pdf de la web de Corbera la Cabanal és incorrecte (li falta la `f` f
 No hi ha disponibles en català els pdf de Calce, Espirà de l’Aglí i Jújols i s'usa la versió en francés.
 }
 \source{
-Joan Becat \url{https://joanbecat.cat}.
+Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/fitxers_cadastre.R}.
 }
 \examples{
 str(fitxers_cadastre)
