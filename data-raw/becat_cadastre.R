@@ -198,6 +198,36 @@ intro_cadastre <- lapply(intro_cadastre, function(x) {
 table(sapply(intro_cadastre, length))
 sort(table(unlist(intro_cadastre)))
 
+
+##### Ajunta salt de línia amb punt final per abreviació de «ed. Terra Nostra» ----
+# elimina espais dobles
+sel_espais <- sapply(intro_cadastre, function(x) any(grepl("  ", x)))
+table(sel_espais)
+intro_cadastre[sel_espais] <- lapply(intro_cadastre[sel_espais], function(x) gsub("  ", " ", x))
+
+sel_ed <- sapply(intro_cadastre, function(x) any(grepl("[eé]d\\.$", x)))
+table(sel_ed)
+ed <- sapply(intro_cadastre[sel_ed], function(x) {
+  l <- c(x[length(x) - 1], x[length(x)])
+  l <- paste(l, collapse = " ")
+  ed_ok <- grepl("Atlas toponymique de +Catalogne Nord, [eé]d\\. +Terra Nostra, Prad(a|es), 2015, 2 volum(e)*s", l)
+  if (!ed_ok) {
+    warning(l)
+    return(NULL)
+  } else {
+    return(l)
+  }
+})
+ed <- ed[!sapply(ed, is.null)]
+ed
+## CONCLUSIONS: penúltima línia acaba amb «.» per l'abreviació de «ed.». -> paste
+intro_cadastre[names(ed)] <- lapply(intro_cadastre[names(ed)], function(x) {
+  uneix <- paste(x[length(x) - 1], x[length(x)])
+  x <- x[-length(x)]
+  x[length(x)] <- uneix
+  x
+})
+
 usethis::use_data(intro_cadastre, overwrite = TRUE)
 load("data/intro_cadastre.rda", verbose = TRUE)
 ## TODO: sistematitzar el text de les introduccions en una taula.
