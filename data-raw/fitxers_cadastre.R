@@ -12,8 +12,10 @@ municipi <- xml2::xml_text(url_mun)
 
 
 url_pdf <- sapply(url, function(x) {
-  html <- httr2::request(x) |> httr2::req_perform() |> httr2::resp_body_html()
-  urls <- xml2::xml_find_all(html, xpath = './/a')
+  html <- httr2::request(x) |>
+    httr2::req_perform() |>
+    httr2::resp_body_html()
+  urls <- xml2::xml_find_all(html, xpath = ".//a")
   url_pdf <- grep("\\.pdf", as.character(urls), value = TRUE)
 
   if (length(url_pdf) > 1) warning("Hi ha més d'una URL de pdf a ", x)
@@ -67,7 +69,7 @@ md5sum <- tools::md5sum(fitxers)
 md5sum_nous <- tools::md5sum(fitxers_nous)
 
 ## Compara fitxers nous amb els antics
-names(md5sum_nous) <-  gsub("/nou/", "/", names(md5sum_nous))
+names(md5sum_nous) <- gsub("/nou/", "/", names(md5sum_nous))
 comp <- merge(md5sum, md5sum_nous, by = 0)
 table(comp[[2]] == comp[[3]])
 setdiff(names(md5sum), names(md5sum_nous))

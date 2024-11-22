@@ -19,4 +19,8 @@ LazyDataCompression: xz
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
-    stringi
+    httr2,
+    pdftools,
+    stringi,
+    usethis,
+    xml2

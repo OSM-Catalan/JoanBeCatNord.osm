@@ -45,8 +45,8 @@ linies_0 <- lapply(n_linies, function(n) {
   intro_cadastre[n == 0]
 })
 
-municipis_linies_0 <-lapply(linies_0, names)
-comarques[comarques$municipi %in%  unique(unlist(municipis_linies_0)), ]
+municipis_linies_0 <- lapply(linies_0, names)
+comarques[comarques$municipi %in% unique(unlist(municipis_linies_0)), ]
 ## CONCLUSIONS: els municipis sense referències a l'Atles toponímic de Catalunya Nord o GEOPORTAIL són del Fenolhedés
 
 
@@ -75,7 +75,9 @@ descartats_num <- mapply(function(x, loc) {
   linies_sel <- lapply(linies, function(sel) sel[[loc]])
   linia_descartada <- which(!x %in% linies_sel)
 
-  if (length(linia_descartada) == 0) return(integer())
+  if (length(linia_descartada) == 0) {
+    return(integer())
+  }
 
   # x[linia_descartada]
   c(which(!x %in% linies_sel), ultima_línia = length(x))
@@ -108,7 +110,8 @@ descartats <- mapply(function(x, loc) {
       "GEOPORTAIL|corregit|",
       "^ROSSIGNOL, J. PEYTAVI i consellers municipals. Llista aprovada pel ple del consell municipal; batllessa: Madeleine DENAMIEL.$"
     ),
-    setdiff(x, linies_sel), value = TRUE, invert = TRUE
+    setdiff(x, linies_sel),
+    value = TRUE, invert = TRUE
   ) # elimina els casos modificats
 }, x = intro_cadastre, loc = names(intro_cadastre))
 descartats <- descartats[sapply(descartats, length) > 0]
@@ -208,7 +211,7 @@ ign_geoportail <- sapply(linies$geoportail, function(x) {
   }
   if (grepl("\\(IGN, Par[íi]s\\) (ha corregit la toponímia.+sobre el seu portal|a corrigé la toponymie.+sur son portail) internet GEOPORTAIL", x)) {
     TRUE
-  } else if (grepl("\\(IGN, Par[íi]s\\) (no ha corregit la toponímia.+sobre el seu portal|n'a pas corrigé la toponymie.+sur son portail) internet GEOPORTAIL", x)){
+  } else if (grepl("\\(IGN, Par[íi]s\\) (no ha corregit la toponímia.+sobre el seu portal|n'a pas corrigé la toponymie.+sur son portail) internet GEOPORTAIL", x)) {
     FALSE
   } else {
     NA
@@ -222,10 +225,10 @@ ign_mapes <- sapply(linies$geoportail, function(x) {
   }
   x <- gsub(" i i ", " i ", x)
   if (grepl("GEOPORTAIL (i sobre els* seus* map(a|es)|et sur sa carte)", x) ||
-      grepl("\\(IGN, Par[íi]s\\) (ha corregit la toponímia.+sobre el seu mapa a|a corrigé la toponymie.+sur sa carte) 1:25.000", x)){
+    grepl("\\(IGN, Par[íi]s\\) (ha corregit la toponímia.+sobre el seu mapa a|a corrigé la toponymie.+sur sa carte) 1:25.000", x)) {
     "corregit"
   } else if (grepl("GEOPORTAIL,* ((ni|i no l’ha corregida) sobre els* seus* map(a|es)|et ne l’a pas corrigée sur sa carte)", x) ||
-             grepl("\\(IGN, Par[íi]s\\) (no ha corregit la toponímia.+sobre el seu mapa a|n'a pas corrigé la toponymie.+sur sa carte) 1:25.000", x)){
+    grepl("\\(IGN, Par[íi]s\\) (no ha corregit la toponímia.+sobre el seu mapa a|n'a pas corrigé la toponymie.+sur sa carte) 1:25.000", x)) {
     "no corregit"
   } else if (grepl("(sobre|per) (la|una) part .*del* (municipi en el )*.*seu mapa", x)) {
     "parcialment corregit"

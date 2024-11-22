@@ -104,8 +104,10 @@ tesaurus_municipis[tesaurus_municipis$becat_comarca == "Fenolhedés", ]
 tesaurus_municipis[tesaurus_municipis$becat_comarca == "Fenolhedés", names(municipis_osm)] <- NA
 
 ## Per REPASSAR:
-tesaurus_municipis[which(tesaurus_municipis$osm_name != tesaurus_municipis$becat_nom),
-                   c("osm_name", "becat_nom", "osm_comarca", "becat_comarca")]
+tesaurus_municipis[
+  which(tesaurus_municipis$osm_name != tesaurus_municipis$becat_nom),
+  c("osm_name", "becat_nom", "osm_comarca", "becat_comarca")
+]
 # CONCLUSIONS: corregir Ralleu / Ral -> Real / Ral
 
 tesaurus_municipis[tesaurus_municipis$becat_nom == "Ral", names(municipis_osm)] <-
@@ -166,14 +168,19 @@ mapview::mapshot2(comarques_osm, url = "inst/comarques_osm.html")
 
 ## Comprova municipis ----
 
-tesaurus_municipis[tesaurus_municipis$becat_nom != tesaurus_municipis$osm_name,
-                   c("becat_nom", "osm_name", "becat_comarca", "osm_comarca")]
-discrepancies <- tesaurus_municipis[tesaurus_municipis$becat_nom != tesaurus_municipis$osm_name &
-                                      tesaurus_municipis$osm_comarca != "Fenolledès",
-                                    c("becat_nom", "osm_name", "becat_comarca", "osm_comarca")]
+tesaurus_municipis[
+  tesaurus_municipis$becat_nom != tesaurus_municipis$osm_name,
+  c("becat_nom", "osm_name", "becat_comarca", "osm_comarca")
+]
+discrepancies <- tesaurus_municipis[
+  tesaurus_municipis$becat_nom != tesaurus_municipis$osm_name &
+    tesaurus_municipis$osm_comarca != "Fenolledès",
+  c("becat_nom", "osm_name", "becat_comarca", "osm_comarca")
+]
 
 openxlsx::write.xlsx(
-  discrepancies, file = "data-raw/discrepàncies-municipis_osm-becat.xlsx", rowNames = FALSE, borders = "surrounding",
+  discrepancies,
+  file = "data-raw/discrepàncies-municipis_osm-becat.xlsx", rowNames = FALSE, borders = "surrounding",
   colWidths = "auto", firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
 )
 
@@ -183,7 +190,8 @@ openxlsx::write.xlsx(
 usethis::use_data(tesaurus_municipis, overwrite = TRUE)
 
 openxlsx::write.xlsx(
-  tesaurus_municipis, file = "data-raw/tesaurus_municipis.xlsx", rowNames = FALSE, borders = "surrounding",
+  tesaurus_municipis,
+  file = "data-raw/tesaurus_municipis.xlsx", rowNames = FALSE, borders = "surrounding",
   colWidths = "auto", firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
 )
 

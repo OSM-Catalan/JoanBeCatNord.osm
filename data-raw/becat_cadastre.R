@@ -11,7 +11,9 @@ files <- lapply(cadastres, lapply, function(x) {
   # x <- gsub("^\\s+[A-Z]\\n", "", x) # treu posició de l'abecedari
   # x <- gsub("[ ]{2,}", "\t", x) # afegeix \t com a separadors de columnes
 
-  if (length(x) == 0 || x %in% c(NA, "", "\\n")) return(data.frame())
+  if (length(x) == 0 || x %in% c(NA, "", "\\n")) {
+    return(data.frame())
+  }
 
   # read.table(text = x, header = FALSE, sep = "\t", row.names = NULL, fill = TRUE, encoding = "UTF-8")
   read.delim(text = x, header = FALSE, row.names = NULL, fill = TRUE, encoding = "UTF-8")
@@ -40,7 +42,7 @@ sapply(files, sapply, function(x) x[1])
 ## CONCLUSIÓ: elimina totes les primeres files (només contenen números)
 
 files <- lapply(files, function(x) {
-  sapply(x, function(p){
+  sapply(x, function(p) {
     if (any(grepl("^\\s+[0-9]+$", p[1]))) {
       p <- p[-1]
     }
@@ -335,8 +337,10 @@ lapply(taules_menys_4cols, sapply, ncol)
 # Afegir columna al final per casos amb ncol = 3, i 1 + col + 2 per casos amb ncol = 1 (el Barquerès)
 
 taula <- lapply(taula, function(x) {
-  out<- lapply(x, function(p) {
-    if (ncol(p) == 4) return(p)
+  out <- lapply(x, function(p) {
+    if (ncol(p) == 4) {
+      return(p)
+    }
     if (ncol(p) == 3) {
       return(cbind(p, c4. = character(nrow(p))))
     }
@@ -355,7 +359,7 @@ unique(lapply(taula, function(x) data.frame(lapply(x[1:5, ], trimws))))
 unique(lapply(taula, function(x) grep("(Noms de|Seccions|Sections)", x[, 1])[1]))
 ## CONCLUSIONS: capçaleres ben situades a les línies 1:3 però amb certa variabilitat. Acaben a les línies 4:5|6 amb nom de la secció.
 
-taula<- lapply(taula, function(x) {
+taula <- lapply(taula, function(x) {
   fi_capçalera <- grep("(Noms de|Seccions|Sections)", x[1:10, 1])[1]
   capçalera <- x[1:(fi_capçalera - 1), ]
   x <- x[fi_capçalera:nrow(x), ]
@@ -403,7 +407,9 @@ taula <- lapply(taula, function(x) {
   segona_línia <- multilínia + 1
   línia_simple <- setdiff(seq_len(nrow(x)), c(multilínia, segona_línia))
 
-  if (length(segona_línia) == 0) return(x)
+  if (length(segona_línia) == 0) {
+    return(x)
+  }
 
   reps2 <- c(ifelse(diff(segona_línia) == 1, 2, 1), 1)
   reps3 <- c(ifelse(diff(segona_línia, lag = 2) == 2, 3, 1), 1, 1)
@@ -419,7 +425,7 @@ taula <- lapply(taula, function(x) {
   }
   reps <- ifelse(reps5 == 5, 5, ifelse(reps4 == 4, 4, ifelse(reps3 == 3, 3, reps2)))
 
-# tmp<- data.frame(segona_línia, reps, reps2, reps3, reps3, reps5); tmp
+  # tmp<- data.frame(segona_línia, reps, reps2, reps3, reps3, reps5); tmp
   if (any(reps == 5)) {
     reps <- reps[-(which(reps == 5) + rep(1:4, each = sum(reps == 5)))]
   }
@@ -434,7 +440,7 @@ taula <- lapply(taula, function(x) {
   }
 
   grups <- rep(seq_along(reps), times = reps)
-# data.frame(segona_línia, grups)
+  # data.frame(segona_línia, grups)
   fila_multilínia <- split(segona_línia, grups)
 
   if (length(fila_multilínia)) {
@@ -529,7 +535,7 @@ taula[names(tipus_errors)] <- lapply(taula[names(tipus_errors)], function(x) {
     }
 
     # x[sort(c(err - 1, err, err + 1)), ]
-    fusiona <- data.frame(multilínia=trimws(x[err - 1, 1]), err=trimws(x[err, 1]))
+    fusiona <- data.frame(multilínia = trimws(x[err - 1, 1]), err = trimws(x[err, 1]))
     fusiona <- apply(fusiona, 2, function(y) {
       y[is.na(y)] <- ""
       y
@@ -591,7 +597,7 @@ codisU[order(nchar(codisU))]
 #### Correccions nchar(codis) == 1 ----
 
 codis1 <- unique(codisU[nchar(codisU) == 1])
-regexp <- paste0("^(", paste(codis1, collapse="|"), ")$")
+regexp <- paste0("^(", paste(codis1, collapse = "|"), ")$")
 codis_1L <- lapply(codis, function(x) unique(grep(regexp, trimws(x), value = TRUE)))
 codis_1L <- codis_1L[sapply(codis_1L, length) > 0]
 codis_1L
@@ -659,7 +665,7 @@ x$Sornian # correcte
 #### Correccions nchar(codis) > 3 ----
 
 codis45 <- unique(codisU[nchar(codisU) > 3])
-regexp <- paste0("^(", paste(codis45, collapse="|"), ")$")
+regexp <- paste0("^(", paste(codis45, collapse = "|"), ")$")
 codis_45L <- lapply(codis, function(x) unique(grep(regexp, trimws(x), value = TRUE)))
 codis_45L <- codis_45L[sapply(codis_45L, length) > 0]
 codis_45L
@@ -679,39 +685,39 @@ x$Cotlliure ## TODO: REPORT error al fitxer ATAV -> AT/AV
 taula$Cotlliure[, 1] <- gsub("ATAV", "AT/AV", taula$Cotlliure[, 1])
 
 
-x$Elna  ## TODO: REPORT error al fitxer ATAV -> AT/AV
+x$Elna ## TODO: REPORT error al fitxer ATAV -> AT/AV
 taula$Elna[, 1] <- gsub("ATAV", "AT/AV", taula$Elna[, 1])
 
 
-x$Estavar  ## TODO: REPORT error al fitxer ADA1 -> AD/A1
+x$Estavar ## TODO: REPORT error al fitxer ADA1 -> AD/A1
 taula$Estavar[, 1] <- gsub("ADA1", "AD/A1", taula$Estavar[, 1])
 
 
-x$`la Guingueta d’Ix`  ## TODO: REPORT error al fitxer ABAE AIA1; CORRECTE: 31B1 31A1
+x$`la Guingueta d’Ix` ## TODO: REPORT error al fitxer ABAE AIA1; CORRECTE: 31B1 31A1
 taula$`la Guingueta d’Ix`[, 1] <- gsub("ABAE", "AB/AE", taula$`la Guingueta d’Ix`[, 1])
 taula$`la Guingueta d’Ix`[, 1] <- gsub("AIA1", "AI/A1", taula$`la Guingueta d’Ix`[, 1])
 
 
-x$`Morellàs i les Illes`  ## CORRECTE: codis_45L$`Morellàs i les Illes`
+x$`Morellàs i les Illes` ## CORRECTE: codis_45L$`Morellàs i les Illes`
 
 
-x$Oceja  ## TODO: REPORT error al fitxer B1B1 -> B1
+x$Oceja ## TODO: REPORT error al fitxer B1B1 -> B1
 taula$Oceja[, 1] <- gsub("B1B1", "B1", taula$Oceja[, 1])
 
 
-x$Paretstortes  ## TODO: REPORT error al fitxer ABA2 -> AB/A2
+x$Paretstortes ## TODO: REPORT error al fitxer ABA2 -> AB/A2
 taula$Paretstortes[, 1] <- gsub("ABA2", "AB/A2", taula$Paretstortes[, 1])
 
 
-x$Perpinyà  ## TODO: REPORT error al fitxer DZEI -> DZ/EI
+x$Perpinyà ## TODO: REPORT error al fitxer DZEI -> DZ/EI
 taula$Perpinyà[, 1] <- gsub("DZEI", "DZ/EI", taula$Perpinyà[, 1])
 
 
-x$Queixàs  ## TODO: REPORT error al fitxer C1A3 -> C1/A3
+x$Queixàs ## TODO: REPORT error al fitxer C1A3 -> C1/A3
 taula$Queixàs[, 1] <- gsub("C1A3", "C1/A3", taula$Queixàs[, 1])
 
 
-x$`Òpol i Perellós`  ## TODO: REPORT error al fitxer A1D1 -> A1/D1
+x$`Òpol i Perellós` ## TODO: REPORT error al fitxer A1D1 -> A1/D1
 taula$`Òpol i Perellós`[, 1] <- gsub("A1D1", "A1/D1", taula$`Òpol i Perellós`[, 1])
 
 
@@ -743,7 +749,7 @@ sospitosos
 # Problemes amb columnes (solució: calcular punts de tall usant files de 3 i 4 columnes) a taula$`Santa Maria la Mar`
 
 ## CONCLUSIONS:
-regexp <- paste0("^(", paste(gsub("\\.", "\\\\.", sospitosos), collapse="|"), ")$")
+regexp <- paste0("^(", paste(gsub("\\.", "\\\\.", sospitosos), collapse = "|"), ")$")
 cerca <- lapply(codis, function(x) grep(regexp, trimws(x), value = TRUE))
 cerca <- cerca[sapply(cerca, length) > 0]
 cerca
@@ -811,7 +817,7 @@ codis <- lapply(taula, function(x) {
 codisU <- setdiff(trimws(unique(unlist(codis))), "")
 
 codis1 <- unique(codisU[nchar(codisU) == 1])
-regexp <- paste0("^(", paste(codis1, collapse="|"), ")$")
+regexp <- paste0("^(", paste(codis1, collapse = "|"), ")$")
 codis_1L <- lapply(codis, function(x) unique(grep(regexp, trimws(x), value = TRUE)))
 codis_1L <- codis_1L[sapply(codis_1L, length) > 0]
 codis_1L
@@ -864,7 +870,7 @@ codis <- lapply(taula, function(x) {
 codisU <- setdiff(trimws(unique(unlist(codis))), "")
 
 codis1 <- unique(codisU[nchar(codisU) == 1])
-regexp <- paste0("^(", paste(codis1, collapse="|"), ")$")
+regexp <- paste0("^(", paste(codis1, collapse = "|"), ")$")
 codis_1L <- lapply(codis, function(x) unique(grep(regexp, trimws(x), value = TRUE)))
 codis_1L <- codis_1L[sapply(codis_1L, length) > 0]
 codis_1L
@@ -883,7 +889,7 @@ taula$Forques[, 1] <- gsub("^\\s+A\\s+$", "A4", taula$Forques[, 1])
 
 x$`Morellàs i les Illes`
 sel <- grep("^\\s+[12]\\s+$$", taula$`Morellàs i les Illes`[, 1])
-corregit <- lapply(sel, function (i) {
+corregit <- lapply(sel, function(i) {
   out <- apply(taula$`Morellàs i les Illes`[c(i - 1, i), ], 2, function(y) {
     paste(trimws(y), collapse = " ")
   })
@@ -917,7 +923,7 @@ codis <- lapply(taula, function(x) {
 codisU <- setdiff(trimws(unique(unlist(codis))), "")
 
 codis3 <- unique(codisU[nchar(codisU) > 2])
-regexp <- paste0("^(", paste(codis3, collapse="|"), ")$")
+regexp <- paste0("^(", paste(codis3, collapse = "|"), ")$")
 codis_3L <- lapply(codis, function(x) unique(grep(regexp, trimws(x), value = TRUE)))
 codis_3L <- codis_3L[sapply(codis_3L, length) > 0]
 codis_3L
@@ -981,8 +987,8 @@ rownames(corregit)[2] <- "pag13.22"
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$`Argelers de la Marenda` <- d_corregit
 
 
@@ -1004,8 +1010,8 @@ corregit[, 4] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Cortsaví <- d_corregit
 
 
@@ -1028,8 +1034,8 @@ corregit[2, c(1, 3)] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Elna <- d_corregit
 
 
@@ -1052,8 +1058,8 @@ corregit[2, c(1, 2, 4)] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$`Espirà de l’Aglí` <- d_corregit
 
 
@@ -1072,8 +1078,8 @@ corregit[2, c(1, 2, 4)] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Estoer <- d_corregit
 
 
@@ -1109,8 +1115,8 @@ corregit[2, 1:3] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Illa <- d_corregit
 
 
@@ -1132,8 +1138,8 @@ corregit[2, c(1, 4)] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Matamala <- d_corregit
 
 
@@ -1156,8 +1162,8 @@ corregit[2, 1:3] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$`Morellàs i les Illes` <- d_corregit
 
 
@@ -1180,8 +1186,8 @@ corregit[2, 4] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Oms <- d_corregit
 
 
@@ -1227,8 +1233,8 @@ corregit[2, c(1, 4)] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$`Sant Feliu d’Amunt` <- d_corregit
 
 
@@ -1243,7 +1249,7 @@ corregit[1, ] <- gsub(
   " -$| Ravin del Serrat d’en Grau$| Rèc del Serrat d’en Grau$", "", corregit[1, ]
 )
 corregit[2, ] <- gsub(
-"^B1/B2/F$|^- |^Ravin d’el Rial |^Rèc del Rial ", "", corregit[2, ]
+  "^B1/B2/F$|^- |^Ravin d’el Rial |^Rèc del Rial ", "", corregit[2, ]
 )
 rownames(corregit)[2] <- "pag9.20"
 corregit[1, 4] <- NA_character_
@@ -1251,8 +1257,8 @@ corregit[2, c(1, 4)] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Sornian <- d_corregit
 
 
@@ -1274,8 +1280,8 @@ corregit[, 4] <- NA_character_
 corregit
 
 d_corregit <- rbind(d[1:(sel - 1), ], corregit, d[(sel + 1):nrow(d), ])
-d_corregit[(sel-3):(sel+3), ]
-d[(sel-3):(sel+3), ]
+d_corregit[(sel - 3):(sel + 3), ]
+d[(sel - 3):(sel + 3), ]
 taula$Teulís <- d_corregit
 
 
@@ -1387,7 +1393,7 @@ taules_compostes <- mapply(function(x, nom) {
 }, x = taula[names(capçalera)], nom = names(capçalera), SIMPLIFY = FALSE)
 str(taules_compostes)
 
-data.frame(names(taula), sort(names(taula)))[names(taula) != sort(names(taula)),]
+data.frame(names(taula), sort(names(taula)))[names(taula) != sort(names(taula)), ]
 ## CONCLUSIONS: l'ordre dels municipis no canvia massa
 
 taules_partides <- do.call(c, taules_compostes)
@@ -1434,7 +1440,8 @@ becat_xlsx <- lapply(becat_xlsx, function(x) {
 
 
 openxlsx::write.xlsx(
-  becat_xlsx, file = "data-raw/becat_cadastre.xlsx", rowNames = TRUE, borders = "surrounding", colWidths = "auto",
+  becat_xlsx,
+  file = "data-raw/becat_cadastre.xlsx", rowNames = TRUE, borders = "surrounding", colWidths = "auto",
   firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
 )
 readODS::write_ods(becat_xlsx, path = "data-raw/becat_cadastre.ods", row_names = TRUE)

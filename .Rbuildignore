@@ -2,9 +2,10 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^\.Rproj\.user$
-^data-raw$
+^\.github$
+^\.lintr$
 ^\.pre-commit-config\.yaml$
 ^_pkgdown\.yml$
+^data-raw$
 ^docs$
 ^pkgdown$
-^\.github$
