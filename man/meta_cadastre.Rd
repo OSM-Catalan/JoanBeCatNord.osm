@@ -7,7 +7,7 @@ Metadades de les revisions dels cadastres
 \description{
 Informació sistematitzada extreta de \code{\link{intro_cadastre}}.
 }
-\usage{data("meta_cadastre")}
+\usage{meta_cadastre}
 \format{
   A data frame with 223 observations on the following 6 variables.
   \describe{
