@@ -26,7 +26,6 @@ Informació sistematitzada extreta de \code{\link{intro_cadastre}}.
 Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/metadades_becat_cadastre.R}.
 }
 \examples{
-data(meta_cadastre)
-## maybe str(meta_cadastre) ; plot(meta_cadastre) ...
+str(meta_cadastre)
 }
 \keyword{datasets}

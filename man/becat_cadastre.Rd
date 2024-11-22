@@ -5,7 +5,7 @@
 Revisió dels topònims dels cadastres dels municipis de Catalunya Nord feta per Joan Becat
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of the dataset. ~~
+Inclou els topònims anteriors i els corregits així com el topònim que apareix al GEOPORTAIL de l'IGN.
 }
 \usage{becat_cadastre}
 \format{
@@ -31,10 +31,12 @@ Revisió dels topònims dels cadastres dels municipis de Catalunya Nord feta per
 Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/becat_cadastre.R}.
 }
 \examples{
-names(becat_cadastre)
 str(becat_cadastre[1])
 
 # Diversitat de capçaleres
 unique(lapply(becat_cadastre, names))
+
+# Municipis inclosos
+names(becat_cadastre)
 }
 \keyword{datasets}
