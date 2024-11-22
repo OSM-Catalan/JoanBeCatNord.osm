@@ -28,4 +28,11 @@ Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw
 \examples{
 str(meta_cadastre)
 }
+\seealso{
+Altres dades relacionades:
+\code{\link{intro_cadastre}},
+\code{\link{becat_cadastre}},
+\code{\link{fitxers_cadastre}},
+\code{\link{comarques}}
+}
 \keyword{datasets}

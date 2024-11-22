@@ -39,4 +39,11 @@ unique(lapply(becat_cadastre, names))
 # Municipis inclosos
 names(becat_cadastre)
 }
+\seealso{
+Altres dades relacionades:
+\code{\link{meta_cadastre}},
+\code{\link{intro_cadastre}},
+\code{\link{fitxers_cadastre}},
+\code{\link{comarques}}
+}
 \keyword{datasets}
