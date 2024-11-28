@@ -41,7 +41,8 @@ fitxers_cadastre[apply(fitxers_cadastre, 1, function(x) any(is.na(x))), ]
 fitxers_cadastre$url_pdf[fitxers_cadastre$municipi == "Corbera la Cabana"] <- "https://joanbecat.cat/wp-content/uploads/2019/07/cat-Web-jbk-cadastre_Corbera_la_Cabana.pdf"
 
 d_antic <- JoanBeCatNord.osm::fitxers_cadastre
-compareDF::view_html(compareDF::compare_df(fitxers_cadastre, d_antic))
+sel_cols <- intersect(names(fitxers_cadastre), names(d_antic))
+compareDF::view_html(compareDF::compare_df(fitxers_cadastre[, sel_cols], d_antic[, sel_cols]))
 
 
 # REPORTED: pdf en francès per Calce, Espirà de l’Aglí i Jújols ----
@@ -55,7 +56,7 @@ for (i in seq_along(fitxers_cadastre$url_pdf)) {
   message(i, " / ", nrow(fitxers_cadastre), " ", fitxers_cadastre$municipi[i])
 
   fitxer <- paste0("data-raw/pdf/nou/", fitxers_cadastre$municipi[i], ".pdf")
-  if (is.na(fitxers_cadastre$url_pdf[i]) | file.exists(fitxer)) next
+  if (is.na(fitxers_cadastre$url_pdf[i]) || file.exists(fitxer)) next
 
   download.file(fitxers_cadastre$url_pdf[i], destfile = fitxer)
 }
@@ -78,6 +79,7 @@ setdiff(names(md5sum_nous), names(md5sum))
 ## Afegeix md5sum dels fitxers
 names(md5sum) <- gsub("^data-raw/pdf/|\\.pdf$", "", names(md5sum))
 fitxers_cadastre <- merge(fitxers_cadastre, md5sum, by.x = "municipi", by.y = 0, all = TRUE)
+names(fitxers_cadastre)[ncol(fitxers_cadastre)] <- "md5sum"
 row.names(fitxers_cadastre) <- NULL
 
 
