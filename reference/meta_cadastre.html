@@ -42,7 +42,7 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A data frame with 223 observations on the following 6 variables.</p><dl><dt><code>municipi</code></dt>
+    <p>Un «data frame» amb 223 observacions de les següents 7 variables.</p><dl><dt><code>municipi</code></dt>
 <dd><p>Nom del municipi.</p></dd>
 
     <dt><code>corregit</code></dt>
@@ -55,16 +55,20 @@
 <dd><p>Vector logic que indica si els topònims han estat corregits al GEOPORTAIL de l'IGN.</p></dd>
 
     <dt><code>ign_mapes</code></dt>
-<dd><p>a character vector</p></dd>
+<dd><p>Vector de tipus caràcter indicant si l'IGN a corregit els maps o no, o si només parcialment.</p></dd>
 
     <dt><code>catala_pdf</code></dt>
 <dd><p>Vector logic que indica si el fitxer pdf és en català (<code>TRUE</code>) o en francès (<code>FALSE</code>).</p></dd>
+
+    <dt><code>dues_taules</code></dt>
+<dd><p>Vector logic que indica si el municipi està dividit en dues taules.</p></dd>
 
 
 </dl></div>
     <div class="section level2">
     <h2 id="detalls">Detalls<a class="anchor" aria-label="anchor" href="#detalls"></a></h2>
-    <p><!-- %%  ~~ If necessary, more details than the __description__ above ~~ --></p>
+    <p>Els municipis amb <code>dues_taules == TRUE</code>, tenen dues taules a la llista <code>becat_cadastre</code> amb el nom del
+municipi seguit de <code>_CADASTRE</code>, <code>_PROPOSAT</code>, <code>_CORREGIT</code> o <code>_NO CORREGIT</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="font">Font<a class="anchor" aria-label="anchor" href="#font"></a></h2>
@@ -82,13 +86,14 @@
     <div class="section level2">
     <h2 id="ref-examples">Exemples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">meta_cadastre</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	223 obs. of  6 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ municipi      : chr  "Aiguatèbia" "Alenyà" "Angostrina i Vilanova de les Escaldes" "Ansinhan" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	223 obs. of  7 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ municipi      : chr  "Aiguatèbia i Talau" "Alenyà" "Angostrina i Vilanova de les Escaldes" "Ansinhan" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ corregit      : logi  TRUE TRUE TRUE FALSE TRUE FALSE ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ atles_CatNord : logi  TRUE TRUE TRUE FALSE TRUE TRUE ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ ign_geoportail: logi  TRUE TRUE TRUE FALSE TRUE TRUE ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ ign_mapes     : chr  "parcialment corregit" "corregit" "corregit" "no corregit" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ catala_pdf    : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ dues_taules   : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Taula de continguts"><h2>En aquesta pàgina</h2>

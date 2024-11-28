@@ -42,7 +42,7 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>El format és una llista de 235 elements, corresponents a la revisió del cadastre de cada municipi. Per cada municipi
+    <p>El format és una llista de 236 elements, corresponents a la revisió del cadastre de cada municipi. Per cada municipi
   hi ha un «data frame» amb tantes observacions com topònims i 5 variables:</p><dl><dt><code>TOPÒNIMS I FULLS CADASTRALS</code></dt>
 <dd><p>Referència del full cadastral del topònim.</p></dd>
 
@@ -67,7 +67,8 @@
 </dl></div>
     <div class="section level2">
     <h2 id="detalls">Detalls<a class="anchor" aria-label="anchor" href="#detalls"></a></h2>
-    <p><!-- %%  ~~ If necessary, more details than the __description__ above ~~ --></p>
+    <p>Els cadastres d'alguns municipis són parcialment corregits i els topònims són dividits en dues taules segons si estan o
+no corregits (vegeu exemples).</p>
     </div>
     <div class="section level2">
     <h2 id="font">Font<a class="anchor" aria-label="anchor" href="#font"></a></h2>
@@ -123,6 +124,29 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4] "NOM SOBRE GÉOPORTAIL (portal cartogràfic de l’IGN)"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "tipus"                                             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "TOPÒNIMS I FULLS CADASTRALS"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "NOM SOBRE EL CADASTRE ANTERIOR"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "NOM SOBRE EL CADASTRE ACTUAL NO CORREGIT"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "NOM SOBRE GÉOPORTAIL (portal cartogràfic de l’IGN)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "tipus"                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Municipis parcialment corregits</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">becat_cadastre</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Catllà_CADASTRE"                 "Catllà_PROPOSAT"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "Conat i Vellans_CADASTRE"        "Conat i Vellans_PROPOSAT"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "Cornellà de Conflent_CADASTRE"   "Cornellà de Conflent_PROPOSAT"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "els Masos_CADASTRE"              "els Masos_PROPOSAT"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "Formiguera_CADASTRE"             "Formiguera_PROPOSAT"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "la Roca de l'Albera_CORREGIT"    "la Roca de l'Albera_NO CORREGIT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Marqueixanes_CADASTRE"           "Marqueixanes_PROPOSAT"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "Mosset_CADASTRE"                 "Mosset_PROPOSAT"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "Orellà_CADASTRE"                 "Orellà_PROPOSAT"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "Rià i Cirac_CADASTRE"            "Rià i Cirac_PROPOSAT"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "Saorra i Toren_CADASTRE"         "Saorra i Toren_PROPOSAT"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "Taurinyà_CADASTRE"               "Taurinyà_PROPOSAT"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "Vallestàvia_CADASTRE"            "Vallestàvia_PROPOSAT"           </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Municipis inclosos</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">becat_cadastre</span><span class="op">)</span></span></span>
@@ -224,143 +248,144 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [96] "la Guingueta d'Ix"                    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "la Llaguna"                           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [98] "la Menera"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] "la Roca de l'Albera"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "la Tor de França"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "la Tor de Querol"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [102] "la Torre del Bisbe"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "Lansac"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [104] "Le Vivièr"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [105] "les Cluses"                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [106] "Llauró"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [107] "Llo"                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [108] "Llupià"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [109] "Marqueixanes_CADASTRE"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [110] "Marqueixanes_PROPOSAT"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [111] "Matamala"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [112] "Maurin"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [113] "Mentet"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [114] "Millars"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [115] "Molig"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [116] "Montalban"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [117] "Montboló"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [118] "Montescot"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [119] "Montesquiu"                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [120] "Montferrer"                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "Montlluís"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [122] "Montner"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [123] "Montoriol"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [124] "Morellàs i les Illes"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [125] "Mosset_CADASTRE"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [126] "Mosset_PROPOSAT"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [127] "Naüja"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [128] "Nefiac"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [129] "Noedes"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [130] "Nyer"                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [131] "Oceja"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [132] "Oleta i Èvol"                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [133] "Oms"                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [134] "Òpol i Perellós"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [135] "Orbanyà"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [136] "Orellà_CADASTRE"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [137] "Orellà_PROPOSAT"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [138] "Ortafà"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [139] "Paçà"                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [140] "Palau de Cerdanya"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [141] "Palau del Vidre"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [142] "Paretstortes"                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [143] "Perpinyà"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [144] "Pesilhan de Conflent"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [145] "Pesillà de la Ribera"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [146] "Pi"                                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [147] "Pià"                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [148] "Planès"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [149] "Planesas"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [150] "Pollestres"                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "Pontellà i Nyils"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [152] "Porta"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [153] "Portè"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [154] "Portvendres"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [155] "Prada"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [156] "Prats de Molló"                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [157] "Prats de Sornian"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [158] "Prunet i Bellpuig"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [159] "Prunhanas"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [160] "Puigvaledor"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [161] "Queixàs"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [162] "Ral"                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [163] "Ralleu"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [164] "Rasiguèras"                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [165] "Rebolhet"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [166] "Reiners"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [167] "Rià i Cirac_CADASTRE"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [168] "Rià i Cirac_PROPOSAT"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [169] "Ribesaltes"                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [170] "Rigardà"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [171] "Rodés"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [172] "Salelles"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [173] "Salses"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [174] "Sansà"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [175] "Sant Andreu de Sureda"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [176] "Sant Cebrià"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [177] "Sant Esteve del Monestir"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [178] "Sant Feliu d'Amunt"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [179] "Sant Feliu d'Avall"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [180] "Sant Genís de Fontanes"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [181] "Sant Hipòlit"                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [182] "Sant Joan la Cella"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [183] "Sant Joan Pla de Corts"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [184] "Sant Llorenç de Cerdans"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [185] "Sant Llorenç de la Salanca"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [186] "Sant Marçal"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [187] "Sant Martin"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [188] "Sant Miquel de Llotes"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [189] "Sant Pau de Fenolhet"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [190] "Sant Pere dels Forcats"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [191] "Sant Nazari"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [192] "Santa Coloma"                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [193] "Santa Llocaia"                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [194] "Santa Maria la Mar"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [195] "Saorra i Toren_CADASTRE"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [196] "Saorra i Toren_PROPOSAT"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [197] "Sautó i Fetges"                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [198] "Serdinyà"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [199] "Serrallonga"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [200] "Soanyes i Marians"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] "Sornian"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [202] "Sureda"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [203] "Talteüll"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [204] "Tarerac"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [205] "Targasona"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [206] "Taurinyà_CADASTRE"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [207] "Taurinyà_PROPOSAT"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [208] "Tellet"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [209] "Terrats"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [210] "Tesà"                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [211] "Teulís"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [212] "Toès i Entrevalls"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [213] "Toluges"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [214] "Torderes"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [215] "Torrelles"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [216] "Trasserra"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [217] "Trevilhac"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [218] "Trilhan"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [219] "Trullars"                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [220] "Tuïr"                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [221] "Ur"                                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [222] "Vallcebollera"                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [223] "Vallestàvia_CADASTRE"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [224] "Vallestàvia_PROPOSAT"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [225] "Vallmanya"                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [226] "Vernet"                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [227] "Vilallonga de la Salanca"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [228] "Vilallonga dels Monts"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [229] "Vilamulaca"                           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [230] "Vilanova de la Ribera"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [231] "Vilanova de Raó"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [232] "Vinçà"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [233] "Vingrau"                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [234] "Viran"                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [235] "Vivers"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] "la Roca de l'Albera_CORREGIT"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "la Roca de l'Albera_NO CORREGIT"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "la Tor de França"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [102] "la Tor de Querol"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "la Torre del Bisbe"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [104] "Lansac"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [105] "Le Vivièr"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [106] "les Cluses"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [107] "Llauró"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [108] "Llo"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [109] "Llupià"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [110] "Marqueixanes_CADASTRE"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [111] "Marqueixanes_PROPOSAT"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [112] "Matamala"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [113] "Maurin"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [114] "Mentet"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [115] "Millars"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [116] "Molig"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [117] "Montalban"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [118] "Montboló"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [119] "Montescot"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [120] "Montesquiu"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "Montferrer"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [122] "Montlluís"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [123] "Montner"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [124] "Montoriol"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [125] "Morellàs i les Illes"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] "Mosset_CADASTRE"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127] "Mosset_PROPOSAT"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [128] "Naüja"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [129] "Nefiac"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [130] "Noedes"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [131] "Nyer"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [132] "Oceja"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [133] "Oleta i Èvol"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [134] "Oms"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [135] "Òpol i Perellós"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [136] "Orbanyà"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [137] "Orellà_CADASTRE"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [138] "Orellà_PROPOSAT"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [139] "Ortafà"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [140] "Paçà"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [141] "Palau de Cerdanya"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [142] "Palau del Vidre"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [143] "Paretstortes"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [144] "Perpinyà"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [145] "Pesilhan de Conflent"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [146] "Pesillà de la Ribera"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [147] "Pi"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [148] "Pià"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [149] "Planès"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [150] "Planesas"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "Pollestres"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [152] "Pontellà i Nyils"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [153] "Porta"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [154] "Portè"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [155] "Portvendres"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [156] "Prada"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [157] "Prats de Molló"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [158] "Prats de Sornian"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [159] "Prunet i Bellpuig"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [160] "Prunhanas"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [161] "Puigvaledor"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [162] "Queixàs"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [163] "Ral"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [164] "Ralleu"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [165] "Rasiguèras"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [166] "Rebolhet"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [167] "Reiners"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [168] "Rià i Cirac_CADASTRE"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [169] "Rià i Cirac_PROPOSAT"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [170] "Ribesaltes"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [171] "Rigardà"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [172] "Rodés"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [173] "Salelles"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [174] "Salses"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [175] "Sansà"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [176] "Sant Andreu de Sureda"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [177] "Sant Cebrià"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [178] "Sant Esteve del Monestir"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [179] "Sant Feliu d'Amunt"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [180] "Sant Feliu d'Avall"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [181] "Sant Genís de Fontanes"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [182] "Sant Hipòlit"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [183] "Sant Joan la Cella"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [184] "Sant Joan Pla de Corts"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [185] "Sant Llorenç de Cerdans"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [186] "Sant Llorenç de la Salanca"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [187] "Sant Marçal"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [188] "Sant Martin"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [189] "Sant Miquel de Llotes"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [190] "Sant Pau de Fenolhet"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [191] "Sant Pere dels Forcats"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [192] "Sant Nazari"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [193] "Santa Coloma"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [194] "Santa Llocaia"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [195] "Santa Maria la Mar"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [196] "Saorra i Toren_CADASTRE"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [197] "Saorra i Toren_PROPOSAT"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [198] "Sautó i Fetges"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [199] "Serdinyà"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [200] "Serrallonga"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] "Soanyes i Marians"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [202] "Sornian"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [203] "Sureda"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [204] "Talteüll"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [205] "Tarerac"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [206] "Targasona"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [207] "Taurinyà_CADASTRE"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [208] "Taurinyà_PROPOSAT"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [209] "Tellet"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [210] "Terrats"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [211] "Tesà"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [212] "Teulís"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [213] "Toès i Entrevalls"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [214] "Toluges"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [215] "Torderes"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [216] "Torrelles"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [217] "Trasserra"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [218] "Trevilhac"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [219] "Trilhan"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [220] "Trullars"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [221] "Tuïr"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [222] "Ur"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [223] "Vallcebollera"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [224] "Vallestàvia_CADASTRE"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [225] "Vallestàvia_PROPOSAT"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] "Vallmanya"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [227] "Vernet"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [228] "Vilallonga de la Salanca"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [229] "Vilallonga dels Monts"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [230] "Vilamulaca"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [231] "Vilanova de la Ribera"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [232] "Vilanova de Raó"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [233] "Vinçà"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [234] "Vingrau"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [235] "Viran"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [236] "Vivers"                               </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Taula de continguts"><h2>En aquesta pàgina</h2>
