@@ -8,25 +8,31 @@ comarques_osm <- comarques_osm[, c("name:ca", "osm_type", "osm_id")]
 names(comarques_osm) <- gsub("^name:ca$", "osm_name", names(comarques_osm))
 
 tesaurus_comarques <- data.frame(
-  becat_nom = grep(" |^Fenolhedés", comarques_becat, value = TRUE, invert = TRUE),
-  comarques_osm[c(2, 1, 3:5), ]
+  becat_nom = grep(" ", comarques_becat, value = TRUE, invert = TRUE),
+  comarques_osm[c(2, 1, 3:6), ]
 )
 
 pendents <- setdiff(comarques_becat, tesaurus_comarques$becat_nom)
-pendents <- c(pendents, pendents[2])
-pendents <- data.frame(becat_nom = pendents, rbind(rep(NA, ncol(comarques_osm)), comarques_osm[4:5, ]))
+pendents <- rep(pendents, 2)
+pendents <- data.frame(becat_nom = pendents, comarques_osm[5:6, ])
 
 tesaurus_comarques <- rbind(tesaurus_comarques, pendents)
 rownames(tesaurus_comarques) <- NULL
 
-tesaurus_comarques[tesaurus_comarques$becat_nom == "Fenolhedés", ]
-tesaurus_comarques[
-  tesaurus_comarques$becat_nom == "Fenolhedés", c("osm_name", "osm_type", "osm_id")
-] <- c("Fenolledès", "relation", "16780160")
+
+d_antic <- JoanBeCatNord.osm::tesaurus_comarques
+sel_cols <- intersect(names(tesaurus_comarques), names(d_antic))
+compareDF::view_html(compareDF::compare_df(tesaurus_comarques[, sel_cols], d_antic[, sel_cols]))
 
 
 ## Desa ----
 
-usethis::use_data(tesaurus_comarques, overwrite = TRUE)
-
+# usethis::use_data(tesaurus_comarques, overwrite = TRUE)
 load("data/tesaurus_comarques.rda", verbose = TRUE) # tesaurus_comarques
+
+openxlsx::write.xlsx(
+  tesaurus_comarques,
+  file = "data-raw/tesaurus_comarques.xlsx", rowNames = FALSE, borders = "surrounding", colWidths = "auto",
+  firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
+)
+readODS::write_ods(tesaurus_comarques, path = "data-raw/tesaurus_comarques.ods", row_names = FALSE)
