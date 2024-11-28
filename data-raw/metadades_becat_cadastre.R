@@ -127,12 +127,11 @@ sort(table(unlist(descartats)))
 #
 ## CONCLUSIONS: Tots els reculls preliminars apareixen al final de les descartades
 # Montferrer amb línia acabada en punt que no acaba la frase -> paste
-# la Roca de l'Albera amb Notes: al final de la introducció.
-## TODO: veure nota i pdf. Els no corregits van fins al final (menor pq "NOM SOBRE EL CADASTRE ACTUAL CORREGIT" és NA en tots els casos) ----
-table(becat_cadastre$`la Roca de l'Albera`$tipus)
+# la Roca de l'Albera amb Notes: al final de la introducció. FET: linies$notes$`la Roca de l'Albera`
+
 
 ## CONCLUSIONS: les línies descartades corresponen als autors, col·laboradors i data de la revisió.
-# en els pdf, formen un mateix paràgram amb linies$corregit
+# en els pdf, formen un mateix paràgraf amb linies$corregit
 
 linies$atribucions <- vector("list", length = length(intro_cadastre))
 names(linies$atribucions) <- names(intro_cadastre)
@@ -144,6 +143,7 @@ linies$atribucions[sapply(linies$atribucions, is.null)] <- lapply(
 
 
 ## Extreu metadades ----
+
 load("data/part/linies_intro_clas.RData", verbose = TRUE) # linies
 
 
@@ -185,7 +185,8 @@ atles_CatNord <- sapply(linies$atles_CatNord, function(x) {
 })
 
 
-## Geoportail ----
+### Geoportail ----
+
 linies$geoportail
 unique(geo_patro <- lapply(linies$geoportail, function(x) {
   gsub("(.+toponímia|toponymie)[ de'’]+.+((sobre el seu|sur son portail).+)\\.", "\\1 XXX \\2", x)
@@ -239,8 +240,45 @@ ign_mapes <- sapply(linies$geoportail, function(x) {
 linies$geoportail[is.na(ign_mapes)]
 
 
+### Taula de metainformació dels fitxers de revisió de cadastres ----
+
 meta_cadastre <- data.frame(
   municipi = names(linies$corregit), corregit, atles_CatNord, ign_geoportail, ign_mapes, catala_pdf, row.names = NULL
 )
+
+
+## Municipis amb dues taules de topònims (corregits i no corregits) ----
+
+municipis_partits_becat_cadastre <- grep("_", names(becat_cadastre), value = TRUE)
+municipis_partits <- unique(gsub("_.+$", "", municipis_partits_becat_cadastre))
+
+
+meta_municipis_partits <- lapply(municipis_partits, function(x) {
+  list(
+    becat_cadastre = grep(paste0("^", x, "_.+$"), names(becat_cadastre), value = TRUE),
+    meta = meta_cadastre[meta_cadastre$municipi == x, ],
+    corregit = linies$corregit[[x]],
+    geoportail = linies$geoportail[[x]]
+  )
+})
+names(meta_municipis_partits) <- municipis_partits
+meta_municipis_partits
+
+meta_cadastre[meta_cadastre$municipi %in% municipis_partits, ]
+municipis_partits_no_corregit <- meta_cadastre$municipi[meta_cadastre$municipi %in% municipis_partits & meta_cadastre$ign_mapes != "corregit"]
+meta_municipis_partits[municipis_partits_no_corregit]
+intro_cadastre[municipis_partits_no_corregit]
+## CONCLUSIONS: els municipis amb dues taules (corregit i proposat) consten com a corregits segons les metadades.
+# IGN mapes i geoportail també corregit segons metadades excepte per Mosset i Orellà
+# Afegeix columna per municipis amb dues taules
+meta_cadastre$dues_taules <- ifelse(meta_cadastre$municipi %in% municipis_partits, TRUE, FALSE)
+sum(meta_cadastre$dues_taules) == length(municipis_partits)
+
+capçaleres_partides <- lapply(becat_cadastre[municipis_partits_becat_cadastre], \(x) names(x)[2:3])
+unique(capçaleres_partides)
+capçaleres_partides[c("la Roca de l'Albera_CORREGIT", "la Roca de l'Albera_NO CORREGIT")]
+
+
+## Desa ----
 
 usethis::use_data(meta_cadastre, overwrite = TRUE)

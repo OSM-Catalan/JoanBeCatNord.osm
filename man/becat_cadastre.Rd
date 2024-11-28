@@ -9,7 +9,7 @@ Inclou els topònims anteriors i els corregits així com el topònim que apareix
 }
 \usage{becat_cadastre}
 \format{
-  El format és una llista de 235 elements, corresponents a la revisió del cadastre de cada municipi. Per cada municipi
+  El format és una llista de 236 elements, corresponents a la revisió del cadastre de cada municipi. Per cada municipi
   hi ha un «data frame» amb tantes observacions com topònims i 5 variables:
   \describe{
     \item{\code{TOPÒNIMS I FULLS CADASTRALS}}{Referència del full cadastral del topònim.}
@@ -25,7 +25,8 @@ Inclou els topònims anteriors i els corregits així com el topònim que apareix
   }
 }
 \details{
-%%  ~~ If necessary, more details than the __description__ above ~~
+Els cadastres d'alguns municipis són parcialment corregits i els topònims són dividits en dues taules segons si estan o
+no corregits (vegeu exemples).
 }
 \source{
 Joan Becat \url{https://joanbecat.cat}. Extracció de les dades a \file{data-raw/becat_cadastre.R}.
@@ -35,6 +36,9 @@ str(becat_cadastre[1])
 
 # Diversitat de capçaleres
 unique(lapply(becat_cadastre, names))
+
+# Municipis parcialment corregits
+grep("_", names(becat_cadastre), value = TRUE)
 
 # Municipis inclosos
 names(becat_cadastre)

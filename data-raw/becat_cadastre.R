@@ -230,9 +230,25 @@ intro_cadastre[names(ed)] <- lapply(intro_cadastre[names(ed)], function(x) {
   x
 })
 
+
+### Canvia noms dels municipis pels del pdf corregits ----
+
+load("data/comarques.rda", verbose = TRUE) # comarques
+
+lapply(comarques[, c("municipi", "municipi_pdf", "nom_fitxer")], function(x) table(names(intro_cadastre) %in% x))
+setdiff(names(intro_cadastre), comarques$nom_fitxer)
+
+noms_corregits <- comarques$municipi[match(gsub("_.+", "", names(intro_cadastre)), comarques$nom_fitxer)]
+tmp <- data.frame(noms_corregits, names(intro_cadastre))
+tmp[tmp[[1]] != tmp[[2]], ]
+
+names(intro_cadastre) <- noms_corregits
+
+
+### Desa intro_cadastre ----
+
 usethis::use_data(intro_cadastre, overwrite = TRUE)
 load("data/intro_cadastre.rda", verbose = TRUE)
-## TODO: sistematitzar el text de les introduccions en una taula.
 
 
 ### Elimina introducció ----
@@ -1362,6 +1378,7 @@ taula <- lapply(taula, function(x) x[-which(x[, 1] == x[, 5]), ])
 
 
 # FET! Punt probablement segur ----
+
 taula2 <- taula
 # save(taula2, file = "data/part/taula2.RData", compress = "xz")
 load("data/part/taula2.RData", verbose = TRUE) # taula2
@@ -1381,7 +1398,6 @@ apply(do.call(rbind, noms_col), 2, unique)
 lapply(noms_col, function(x) x[, 2:3])
 ## CONCLUSIONS: la primera capçalera inclou noms presents als cadastres, la segona conté propostes de canvis
 
-
 taules_compostes <- mapply(function(x, nom) {
   sel <- grep("^TOPÒNIMS", x[, 1])
   out <- x[(sel + 1):nrow(x), ]
@@ -1399,11 +1415,51 @@ data.frame(names(taula), sort(names(taula)))[names(taula) != sort(names(taula)),
 taules_partides <- do.call(c, taules_compostes)
 names(taules_partides) <- sapply(strsplit(names(taules_partides), "\\."), function(x) x[2])
 
-taula <- c(taula[!names(taula) %in% names(taules_compostes)], taules_partides)
+
+table(taula$`la Roca de l’Albera`$tipus)
+## CONCLUSIONS: a la Roca de l'Albera tipus divideix la taula en topònims corregits i no corregits
+taula_partida <- split(taula$`la Roca de l’Albera`, !grepl("NOMS CORREGITS$", taula$`la Roca de l’Albera`$tipus))
+names(taula_partida) <- paste0("la Roca de l’Albera_", c("CORREGIT", "NO CORREGIT"))
+taula_partida$`la Roca de l’Albera_CORREGIT`$tipus <- gsub(
+  " NOMS CORREGITS$", "", taula_partida$`la Roca de l’Albera_CORREGIT`$tipus
+)
+taula_partida$`la Roca de l’Albera_NO CORREGIT`$tipus <- gsub(
+  " NOMS NO CORREGITS$", "", taula_partida$`la Roca de l’Albera_NO CORREGIT`$tipus
+)
+names(taula_partida$`la Roca de l’Albera_NO CORREGIT`)[3] <- "NOM SOBRE EL CADASTRE ACTUAL NO CORREGIT"
+
+
+taules_partides <- c(taules_partides, taula_partida)
+
+
+taula <- c(taula[!names(taula) %in% c(names(taules_compostes), "la Roca de l’Albera")], taules_partides)
 taula <- taula[order(names(taula))]
 
 
+## Unifica noms de columnes ----
+
+lapply(1:5, function(col) {
+  sort(unique(unlist(lapply(taula, function(x) names(x)[col]))))
+})
+sort(unique(unlist(lapply(taula, function(x) names(x)[2:3]))))
+sort(unique(unlist(lapply(taula, function(x) names(x)[c(1, 4)]))))
+unique(lapply(taula, function(x) names(x)[2:4]))
+taula <- lapply(taula, function(x) {
+  names(x)[1] <- "TOPÒNIMS I FULLS CADASTRALS"
+
+  names(x)[2] <- gsub("^NOM SUR LE CADASTRE ACTUEL$", "NOM SOBRE EL CADASTRE ACTUAL", names(x)[2])
+  names(x)[2] <- gsub("^NOM SUR LE CADASTRE ANTÉRIEUR$", "NOM SOBRE EL CADASTRE ANTERIOR", names(x)[2])
+
+  names(x)[3] <- gsub("^NOM À CORRIGER SUR LE CADASTRE$", "NOM A CORREGIR SOBRE EL CADASTRE", names(x)[3])
+  names(x)[3] <- gsub("^NOM SUR LE CADASTRE ACTUEL CORRIGÉ$", "NOM SOBRE EL CADASTRE ACTUAL CORREGIT", names(x)[3])
+
+  names(x)[4] <- "NOM SOBRE GÉOPORTAIL (portal cartogràfic de l’IGN)"
+  x
+})
+
+
 ## Canvia noms de la llista pels del pdf corregits ----
+
 load("data/comarques.rda", verbose = TRUE) # comarques
 
 lapply(comarques[, c("municipi", "municipi_pdf", "nom_fitxer")], function(x) table(names(taula) %in% x))
@@ -1419,6 +1475,7 @@ names(taula) <- noms_corregits
 
 
 # FET! Punt probablement segur ----
+
 taula3 <- taula
 # save(taula3, file = "data/part/taula3.RData", compress = "xz")
 load("data/part/taula3.RData", verbose = TRUE) # taula3
