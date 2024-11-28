@@ -131,6 +131,13 @@ table(comarques$comarca)
 comarques <- comarques[, c("municipi", "comarca", "municipi_pdf", "comarca_pdf", "nom_fitxer")]
 usethis::use_data(comarques, overwrite = TRUE)
 
+openxlsx::write.xlsx(
+  comarques,
+  file = "data-raw/comarques.xlsx", rowNames = FALSE, borders = "surrounding", colWidths = "auto",
+  firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
+)
+readODS::write_ods(comarques, path = "data-raw/comarques.ods", row_names = FALSE)
+
 
 ### Altres dades (data, autors, estat a l'IGN) ----
 

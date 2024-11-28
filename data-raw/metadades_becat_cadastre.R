@@ -282,3 +282,10 @@ capçaleres_partides[c("la Roca de l'Albera_CORREGIT", "la Roca de l'Albera_NO C
 ## Desa ----
 
 usethis::use_data(meta_cadastre, overwrite = TRUE)
+
+openxlsx::write.xlsx(
+  meta_cadastre,
+  file = "data-raw/meta_cadastre.xlsx", rowNames = FALSE, borders = "surrounding", colWidths = "auto",
+  firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
+)
+readODS::write_ods(meta_cadastre, path = "data-raw/meta_cadastre.ods", row_names = FALSE)

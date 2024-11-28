@@ -80,5 +80,15 @@ names(md5sum) <- gsub("^data-raw/pdf/|\\.pdf$", "", names(md5sum))
 fitxers_cadastre <- merge(fitxers_cadastre, md5sum, by.x = "municipi", by.y = 0, all = TRUE)
 row.names(fitxers_cadastre) <- NULL
 
+
+## Desa ----
+
 # usethis::use_data(fitxers_cadastre, overwrite = TRUE)
 load("data/fitxers_cadastre.rda", verbose = TRUE) # fitxers_cadastre
+
+openxlsx::write.xlsx(
+  fitxers_cadastre,
+  file = "data-raw/fitxers_cadastre.xlsx", rowNames = FALSE, borders = "surrounding", colWidths = "auto",
+  firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
+)
+readODS::write_ods(fitxers_cadastre, path = "data-raw/fitxers_cadastre.ods", row_names = FALSE)
