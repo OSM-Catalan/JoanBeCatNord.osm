@@ -4,8 +4,9 @@ municipis_becat <- comarques[, c("municipi", "comarca")]
 names(municipis_becat) <- c("becat_nom", "becat_comarca")
 
 municipis_osm <- monitorOSM::municipis[monitorOSM::municipis$regio == "CatNord", ]
-municipis_osm <- municipis_osm[, c("name:ca", "comarca", "osm_type", "osm_id")]
-names(municipis_osm) <- gsub("^name:ca$", "osm_name", names(municipis_osm))
+municipis_osm <- municipis_osm[, c("name:ca", "name", "comarca", "osm_type", "osm_id")]
+names(municipis_osm) <- gsub("^name$", "osm_name", names(municipis_osm))
+names(municipis_osm) <- gsub("^name:ca$", "osm_name:ca", names(municipis_osm))
 names(municipis_osm) <- gsub("^comarca$", "osm_comarca", names(municipis_osm))
 
 
@@ -16,7 +17,19 @@ tesaurus_municipis <- cbind(
 tesaurus_municipis
 
 sel_mun_osm <- sapply(tesaurus_municipis$becat_nom, function(x) {
-  sel <- grep(paste0("^", x, "$"), municipis_osm$osm_name)
+  sel <- grep(paste0("^", x, "$"), municipis_osm$`osm_name:ca`)
+  if (length(sel) == 0) {
+    sel <- grep(x, municipis_osm$`osm_name:ca`)
+  }
+  if (length(sel) == 0) {
+    sel <- agrep(paste0("^", x, "$"), municipis_osm$`osm_name:ca`)
+  }
+  if (length(sel) == 0) {
+    sel <- agrep(x, municipis_osm$`osm_name:ca`)
+  }
+  if (length(sel) == 0) {
+    sel <- grep(paste0("^", x, "$"), municipis_osm$osm_name)
+  }
   if (length(sel) == 0) {
     sel <- grep(x, municipis_osm$osm_name)
   }
@@ -31,25 +44,27 @@ sel_mun_osm <- sapply(tesaurus_municipis$becat_nom, function(x) {
   }
 
   if (length(sel) > 1) {
-    warning(x, " amb >1 candidat: ", paste(paste(sel, municipis_osm$osm_name[sel]), collapse = ", "))
+    warning(x, " amb >1 candidat: ", paste(paste(sel, municipis_osm$`osm_name:ca`[sel]), collapse = ", "))
   }
   sel
 })
 
 ## Selecció manual
-sel_mun_osm$Baó <- 93
+sel_mun_osm$Baó <- 121
 sel_mun_osm$Castell <- 35
-sel_mun_osm$Corbera <- 109
-sel_mun_osm$`l'Albera` <- 185
+sel_mun_osm$Corbera <- 137
+sel_mun_osm$Fenolhet <- 96
+sel_mun_osm$`l'Albera` <- 213
 sel_mun_osm$Pi <- 66
-sel_mun_osm$`Vilanova de Raó` <- 176
-sel_mun_osm$Viran <- NA
+sel_mun_osm$`Vilanova de Raó` <- 204
+sel_mun_osm$Viran <- 123
 
 table(sapply(sel_mun_osm, length))
 sel_mun_osm <- unlist(sel_mun_osm)
 
 tesaurus_municipis[, names(municipis_osm)] <- municipis_osm[sel_mun_osm, ]
-tesaurus_municipis[is.na(tesaurus_municipis$osm_name), ]
+tesaurus_municipis[is.na(tesaurus_municipis$`osm_name:ca`), ]
+
 
 sel_mun_osm_pendents <- sapply(tesaurus_municipis$becat_nom[is.na(tesaurus_municipis$osm_name)], function(x) {
   sel <- grep(paste0("^", x, "$"), municipis_osm$osm_name)
@@ -80,16 +95,11 @@ sel_mun_osm_pendents <- sapply(tesaurus_municipis$becat_nom[is.na(tesaurus_munic
   sel
 })
 
+
 ## Selecció manual
-sel_mun_osm_pendents$`Argelers de la Marenda` <- 88
-sel_mun_osm_pendents$`Corbera la Cabana` <- 121
 sel_mun_osm_pendents$`Eus i Coma` <- grep("Eus", municipis_osm$osm_name)
-sel_mun_osm_pendents$`la Torre del Bisbe` <- 123
-sel_mun_osm_pendents$`Pesilhan de Conflent` <- NA
-sel_mun_osm_pendents$`Sant Joan Pla de Corts` <- 193
-sel_mun_osm_pendents$`Sant Martin` <- NA
-sel_mun_osm_pendents$`Sant Pau de Fenolhet` <- NA
-sel_mun_osm_pendents$Viran <- NA
+sel_mun_osm_pendents$`Pesilhan de Conflent` <- 103
+
 
 table(sapply(sel_mun_osm_pendents, length))
 sel_mun_osm_pendents <- unlist(sel_mun_osm_pendents)
@@ -97,24 +107,68 @@ sel_mun_osm_pendents <- unlist(sel_mun_osm_pendents)
 tesaurus_municipis[match(names(sel_mun_osm_pendents), tesaurus_municipis$becat_nom), names(municipis_osm)] <-
   municipis_osm[sel_mun_osm_pendents, ]
 
+
+## Omple manualment
+tesaurus_municipis[is.na(tesaurus_municipis$`osm_name:ca`), ]
+municipis_osm[!municipis_osm$osm_id %in% tesaurus_municipis$osm_id, ]
+
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Ansinhan", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Ansinyà", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Argelers de la Marenda", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Argelers", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Camporsin", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Campossí", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Cassanhas", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Cassanyes", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "la Roca de l'Albera", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "la Roca d'Albera", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Pontellà i Nyils", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Pontellà", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Prunhanas", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Prunyanes", ]
 tesaurus_municipis[tesaurus_municipis$becat_nom == "Sansà", names(municipis_osm)] <-
-  municipis_osm[municipis_osm$osm_name == "Censà", ]
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Censà", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Saorra i Toren", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Saorra", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Sautó i Fetges", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Sautó", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Soanyes i Marians", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Soanyes", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Sornian", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Sornià", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Trilhan", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` %in% "Trillà", ]
+
+
 
 tesaurus_municipis[tesaurus_municipis$becat_comarca == "Fenolhedés", ]
-tesaurus_municipis[tesaurus_municipis$becat_comarca == "Fenolhedés", names(municipis_osm)] <- NA
+
+
 
 ## Per REPASSAR:
 tesaurus_municipis[
-  which(tesaurus_municipis$osm_name != tesaurus_municipis$becat_nom),
-  c("osm_name", "becat_nom", "osm_comarca", "becat_comarca")
+  which(tesaurus_municipis$`osm_name:ca` != tesaurus_municipis$becat_nom),
+  c("osm_name:ca", "becat_nom", "osm_name", "osm_comarca", "becat_comarca")
 ]
-# CONCLUSIONS: corregir Ralleu / Ral -> Real / Ral
+# CONCLUSIONS: corregir Ralleu / Ral -> Real / Ral; la Cabanassa / Corbera la Cabana -> ??;
+# Torrelles de la Salanca / la Torre del Bisbe -> ??; Taurinyà / Maurin -> ??; Brullà / Viran -> ??;
+municipis_osm[!municipis_osm$osm_id %in% tesaurus_municipis$osm_id, ]
+dbTools::duplicatedPK(tesaurus_municipis, pk = "osm_id")
 
 tesaurus_municipis[tesaurus_municipis$becat_nom == "Ral", names(municipis_osm)] <-
-  municipis_osm[municipis_osm$osm_name == "Real", ]
+  municipis_osm[municipis_osm$`osm_name:ca` == "Real", ]
 
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Corbera la Cabana", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` == "la Cabana de Corbera", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Maurin", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` == "Maurí", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "Viran", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` == "Virà", ]
+tesaurus_municipis[tesaurus_municipis$becat_nom == "la Torre del Bisbe", names(municipis_osm)] <-
+  municipis_osm[municipis_osm$`osm_name:ca` == "la Torre d'Elna", ]
 
-tesaurus_municipis[is.na(tesaurus_municipis$osm_name), ] ## sense municipi a OSM o Fenolleda
+tesaurus_municipis[is.na(tesaurus_municipis$`osm_name:ca`), ] ## sense municipi
+
 candidats_osm <- lapply(tesaurus_municipis$becat_nom[is.na(tesaurus_municipis$osm_name)], function(x) {
   osmdata::getbb(paste0(x, ", Pirineus Orientals"), format_out = "data.frame")
 })
@@ -138,9 +192,9 @@ municipis_pendents_osm[, grep("^name", names(municipis_pendents_osm))]
 
 tesaurus_municipis[is.na(tesaurus_municipis$osm_name), names(municipis_osm)] <- municipis_pendents
 tesaurus_municipis[is.na(tesaurus_municipis$osm_comarca), ]
-tesaurus_municipis$osm_comarca[tesaurus_municipis$becat_comarca == "Fenolhedés"] <- "Fenolledès"
+# tesaurus_municipis$osm_comarca[tesaurus_municipis$becat_comarca == "Fenolhedés"] <- "Fenolledès"
 municipis_osm[!municipis_osm$osm_name %in% tesaurus_municipis$osm_name, ]
-## TODO: REPORT sense dades de Becat per Sallagosa, Vilafranca de Conflent i Centernac (forat al mapa del Fenolledès)
+## TODO: #2 sense dades de Becat per Sallagosa, Vilafranca de Conflent i Centernac (forat al mapa del Fenolledès)
 
 
 ## Duplicats?
@@ -148,8 +202,15 @@ apply(tesaurus_municipis[, c("becat_nom", "osm_name", "osm_id")], 2, function(x)
 
 
 ## Comprova comarques ----
+
 unique(tesaurus_municipis[, c("osm_comarca", "becat_comarca")])
-## CONCLUSIONS: hi ha discrepancies
+dif_comarques <- tesaurus_municipis[tesaurus_municipis$becat_comarca != tesaurus_municipis$osm_comarca, ]
+dif_comarques$osm_comarca <- gsub("^Fenolledès$", "Fenolhedés", dif_comarques$osm_comarca)
+dif_comarques$osm_comarca <- gsub("^Alta Cerdanya$", "Cerdanya", dif_comarques$osm_comarca)
+dif_comarques <- dif_comarques[dif_comarques$becat_comarca != dif_comarques$osm_comarca, ]
+dif_comarques[, c("becat_nom", "becat_comarca", "osm_comarca")]
+tesaurus_municipis[tesaurus_municipis$becat_comarca != tesaurus_municipis$osm_comarca, ]
+## CONCLUSIONS: hi ha discrepàncies
 
 library(osmdata)
 library(sf)
@@ -160,11 +221,12 @@ municipis_sf <- opq_osm_id(id = na.omit(tesaurus_municipis$osm_id), type = na.om
 municipis_sf_becat <- st_as_sf(merge(tesaurus_municipis, municipis_sf$osm_multipolygons, by = "osm_id"))
 
 mapa <- municipis_sf_becat[, c("becat_nom", "osm_name", "osm_comarca", "becat_comarca")]
-comarques_becat <- mapview::mapview(mapa, zcol = "becat_comarca")
+comarques_becat <- mapview::mapview(mapa, zcol = "becat_comarca", map.types = "OpenStreetMap.CAT")
 mapview::mapshot2(comarques_becat, url = "inst/comarques_becat.html")
-comarques_osm <- mapview::mapview(mapa, zcol = "osm_comarca")
+comarques_osm <- mapview::mapview(mapa, zcol = "osm_comarca", map.types = "OpenStreetMap.CAT")
 mapview::mapshot2(comarques_osm, url = "inst/comarques_osm.html")
 ## CONCLUSIONS: algunes discrepàncies
+
 
 ## Comprova municipis ----
 
@@ -173,20 +235,23 @@ tesaurus_municipis[
   c("becat_nom", "osm_name", "becat_comarca", "osm_comarca")
 ]
 discrepancies <- tesaurus_municipis[
-  tesaurus_municipis$becat_nom != tesaurus_municipis$osm_name &
+  tesaurus_municipis$becat_nom != tesaurus_municipis$`osm_name:ca` &
     tesaurus_municipis$osm_comarca != "Fenolledès",
-  c("becat_nom", "osm_name", "becat_comarca", "osm_comarca")
+  c("becat_nom", "osm_name:ca", "osm_name", "osm_comarca")
 ]
 
 openxlsx::write.xlsx(
   discrepancies,
-  file = "data-raw/discrepàncies-municipis_osm-becat.xlsx", rowNames = FALSE, borders = "surrounding",
+  file = "inst/discrepàncies-municipis_osm-becat.xlsx", rowNames = FALSE, borders = "surrounding",
   colWidths = "auto", firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
 )
 
 
 ## Desa ----
 
+tesaurus_municipis <- tesaurus_municipis[order(tesaurus_municipis$becat_comarca, tesaurus_municipis$becat_nom), ]
+tesaurus_municipis <- unique(tesaurus_municipis)
+rownames(tesaurus_municipis) <- NULL
 usethis::use_data(tesaurus_municipis, overwrite = TRUE)
 
 openxlsx::write.xlsx(
