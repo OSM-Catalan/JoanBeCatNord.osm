@@ -50,14 +50,14 @@ sel_mun_osm <- sapply(tesaurus_municipis$becat_nom, function(x) {
 })
 
 ## Selecció manual
-sel_mun_osm$Baó <- 121
-sel_mun_osm$Castell <- 35
-sel_mun_osm$Corbera <- 137
-sel_mun_osm$Fenolhet <- 96
-sel_mun_osm$`l'Albera` <- 213
-sel_mun_osm$Pi <- 66
-sel_mun_osm$`Vilanova de Raó` <- 204
-sel_mun_osm$Viran <- 123
+sel_mun_osm$Baó <- 119
+sel_mun_osm$Castell <- 33
+sel_mun_osm$Corbera <- 135
+sel_mun_osm$Fenolhet <- 94
+sel_mun_osm$`l'Albera` <- 147
+sel_mun_osm$Pi <- 65
+sel_mun_osm$`Vilanova de Raó` <- 205
+sel_mun_osm$Viran <- NA
 
 table(sapply(sel_mun_osm, length))
 sel_mun_osm <- unlist(sel_mun_osm)
@@ -98,7 +98,7 @@ sel_mun_osm_pendents <- sapply(tesaurus_municipis$becat_nom[is.na(tesaurus_munic
 
 ## Selecció manual
 sel_mun_osm_pendents$`Eus i Coma` <- grep("Eus", municipis_osm$osm_name)
-sel_mun_osm_pendents$`Pesilhan de Conflent` <- 103
+sel_mun_osm_pendents$`Pesilhan de Conflent` <- 101
 
 
 table(sapply(sel_mun_osm_pendents, length))
@@ -209,8 +209,8 @@ dif_comarques$osm_comarca <- gsub("^Fenolledès$", "Fenolhedés", dif_comarques$
 dif_comarques$osm_comarca <- gsub("^Alta Cerdanya$", "Cerdanya", dif_comarques$osm_comarca)
 dif_comarques <- dif_comarques[dif_comarques$becat_comarca != dif_comarques$osm_comarca, ]
 dif_comarques[, c("becat_nom", "becat_comarca", "osm_comarca")]
-tesaurus_municipis[tesaurus_municipis$becat_comarca != tesaurus_municipis$osm_comarca, ]
-## CONCLUSIONS: hi ha discrepàncies
+## CONCLUSIONS: discrepàncies resoltes però el municipi de Prunet i Bellpuig s'hauria de dividir entre Rosselló (Prunet)
+# i Vallespir (Bellpuig)
 
 library(osmdata)
 library(sf)
@@ -231,8 +231,8 @@ mapview::mapshot2(comarques_osm, url = "inst/comarques_osm.html")
 ## Comprova municipis ----
 
 tesaurus_municipis[
-  tesaurus_municipis$becat_nom != tesaurus_municipis$osm_name,
-  c("becat_nom", "osm_name", "becat_comarca", "osm_comarca")
+  tesaurus_municipis$becat_nom != tesaurus_municipis$`osm_name:ca`,
+  c("becat_nom", "osm_name:ca", "osm_name", "becat_comarca", "osm_comarca")
 ]
 discrepancies <- tesaurus_municipis[
   tesaurus_municipis$becat_nom != tesaurus_municipis$`osm_name:ca` &
