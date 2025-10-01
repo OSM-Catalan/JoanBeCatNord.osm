@@ -30,4 +30,5 @@ str(tesaurus_comarques)
 Altres dades relacionades:
 \code{\link{tesaurus_municipis}},
 }
+\concept{dades}
 \keyword{datasets}

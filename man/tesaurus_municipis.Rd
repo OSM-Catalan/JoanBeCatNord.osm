@@ -40,4 +40,5 @@ discrepancies
 Altres dades relacionades:
 \code{\link{tesaurus_comarques}}
 }
+\concept{dades}
 \keyword{datasets}

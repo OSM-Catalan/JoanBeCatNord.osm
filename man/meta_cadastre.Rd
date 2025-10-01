@@ -15,7 +15,7 @@ Informació sistematitzada extreta de \code{\link{intro_cadastre}}.
     \item{\code{corregit}}{Vector logic que indica si el cadastre ha estat corregit.}
     \item{\code{atles_CatNord}}{Vector logic que indica si els topònims apareixen a l’Atles toponímic de Catalunya Nord, ed. Terra Nostra, Prada, 2015, 2 volums, 970p.}
     \item{\code{ign_geoportail}}{Vector logic que indica si els topònims han estat corregits al GEOPORTAIL de l'IGN.}
-    \item{\code{ign_mapes}}{Vector de tipus caràcter indicant si l'IGN a corregit els maps o no, o si només parcialment.}
+    \item{\code{ign_mapes}}{Vector de tipus caràcter indicant si l'IGN a corregit els mapes o no, o si només parcialment.}
     \item{\code{catala_pdf}}{Vector logic que indica si el fitxer pdf és en català (\code{TRUE}) o en francès (\code{FALSE}).}
     \item{\code{dues_taules}}{Vector logic que indica si el municipi està dividit en dues taules.}
   }
@@ -37,4 +37,5 @@ Altres dades relacionades:
 \code{\link{fitxers_cadastre}},
 \code{\link{comarques}}
 }
+\concept{dades}
 \keyword{datasets}

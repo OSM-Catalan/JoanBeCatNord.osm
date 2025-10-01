@@ -50,4 +50,5 @@ Altres dades relacionades:
 \code{\link{fitxers_cadastre}},
 \code{\link{comarques}}
 }
+\concept{dades}
 \keyword{datasets}

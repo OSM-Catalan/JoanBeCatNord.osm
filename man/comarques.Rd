@@ -34,4 +34,5 @@ Altres dades relacionades:
 \code{\link{intro_cadastre}},
 \code{\link{fitxers_cadastre}}
 }
+\concept{dades}
 \keyword{datasets}
