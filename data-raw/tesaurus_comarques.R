@@ -4,7 +4,7 @@ comarques_becat <- sort(unique(comarques$comarca))
 grep(" ", comarques_becat, value = TRUE)
 
 comarques_osm <- monitorOSM::comarques[monitorOSM::comarques$regio == "CatNord", ]
-comarques_osm <- comarques_osm[, c("name:ca", "osm_type", "osm_id")]
+comarques_osm <- comarques_osm[, c("name:ca", "osm_type", "osm_id", "wikidata")]
 names(comarques_osm) <- gsub("^name:ca$", "osm_name", names(comarques_osm))
 
 tesaurus_comarques <- data.frame(
@@ -22,7 +22,7 @@ rownames(tesaurus_comarques) <- NULL
 
 d_antic <- JoanBeCatNord.osm::tesaurus_comarques
 sel_cols <- intersect(names(tesaurus_comarques), names(d_antic))
-compareDF::view_html(compareDF::compare_df(tesaurus_comarques[, sel_cols], d_antic[, sel_cols]))
+compareDF::view_html(compareDF::compare_df(tesaurus_comarques[, sel_cols], d_antic[, sel_cols], group_col = "osm_id"))
 
 
 ## Desa ----
@@ -35,4 +35,3 @@ openxlsx::write.xlsx(
   file = "data-raw/tesaurus_comarques.xlsx", rowNames = FALSE, borders = "surrounding", colWidths = "auto",
   firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
 )
-readODS::write_ods(tesaurus_comarques, path = "data-raw/tesaurus_comarques.ods", row_names = FALSE)
