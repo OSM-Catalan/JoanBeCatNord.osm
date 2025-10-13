@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">JoanBeCatNord.osm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Commuta la navegació">
@@ -42,7 +42,7 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>Un «data frame» amb 8 observacions de les següents 4 variables.</p><dl><dt><code>becat_nom</code></dt>
+    <p>Un «data frame» amb 8 observacions de les següents 5 variables.</p><dl><dt><code>becat_nom</code></dt>
 <dd><p>Nom de la comarca segons la revisió de topònims de Joan Becat.</p></dd>
 
     <dt><code>osm_name</code></dt>
@@ -53,6 +53,9 @@
 
     <dt><code>osm_id</code></dt>
 <dd><p>Identificador de l'objecte d'OSM que representa la comarca.</p></dd>
+
+    <dt><code>wikidata</code></dt>
+<dd><p>Identificador de la comarca a wikidata.</p></dd>
 
 
 </dl></div>
@@ -73,11 +76,12 @@
     <div class="section level2">
     <h2 id="ref-examples">Exemples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">tesaurus_comarques</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	8 obs. of  4 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	8 obs. of  5 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ becat_nom: chr  "Capcir" "Cerdanya" "Conflent" "Fenolhedés" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ osm_name : chr  "Capcir" "Alta Cerdanya" "Conflent" "Fenolledès" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ osm_type : chr  "relation" "relation" "relation" "relation" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ osm_id   : chr  "13433227" "13433224" "13433226" "16780160" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ wikidata : chr  "Q15478" "Q15479" "Q15477" "Q15481" ...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Taula de continguts"><h2>En aquesta pàgina</h2>

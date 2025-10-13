@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">JoanBeCatNord.osm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Commuta la navegació">
@@ -42,7 +42,7 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>Un «data frame» amb 223 observacions de les següents 7 variables.</p><dl><dt><code>becat_nom</code></dt>
+    <p>Un «data frame» amb 223 observacions de les següents 8 variables.</p><dl><dt><code>becat_nom</code></dt>
 <dd><p>Nom del municipi segons la revisió de topònims de Joan Becat.</p></dd>
 
     <dt><code>becat_comarca</code></dt>
@@ -63,6 +63,9 @@
     <dt><code>osm_id</code></dt>
 <dd><p>Identificador de l'objecte d'OSM que representa el municipi.</p></dd>
 
+    <dt><code>wikidata</code></dt>
+<dd><p>Identificador del municipi a wikidata.</p></dd>
+
 
 </dl></div>
     <div class="section level2">
@@ -82,7 +85,7 @@
     <div class="section level2">
     <h2 id="ref-examples">Exemples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">tesaurus_municipis</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	223 obs. of  7 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	223 obs. of  8 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ becat_nom    : chr  "els Angles" "Font-rabiosa" "Formiguera" "Matamala" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ becat_comarca: chr  "Capcir" "Capcir" "Capcir" "Capcir" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ osm_name:ca  : chr  "els Angles" "Font-rabiosa" "Formiguera" "Matamala" ...</span>
@@ -90,6 +93,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ osm_comarca  : chr  "Capcir" "Capcir" "Capcir" "Capcir" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ osm_type     : chr  "relation" "relation" "relation" "relation" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ osm_id       : chr  "53365" "2814982" "2815058" "1069580" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ wikidata     : chr  "Q1110114" "Q1071929" "Q1094347" "Q1369350" ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">discrepancies</span> <span class="op">&lt;-</span> <span class="va">tesaurus_municipis</span><span class="op">[</span></span></span>
 <span class="r-in"><span>  <span class="va">tesaurus_municipis</span><span class="op">$</span><span class="va">becat_nom</span> <span class="op">!=</span> <span class="va">tesaurus_municipis</span><span class="op">$</span><span class="va">`osm_name:ca`</span> <span class="op">&amp;</span></span></span>
@@ -103,10 +107,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15   Font-romeu Odelló Vià   Font-romeu, Odelló i Vià</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 32                 Castell          Castell de Vernet</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 37         Conat i Vellans                      Conat</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39               els Masos                  Los Masos</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43              Eus i Coma                        Eus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 63                      Pi             Pi de Conflent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70                   Sansà                      Censà</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                   Sansà                      Sançà</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 72          Saorra i Toren                     Saorra</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 73          Sautó i Fetges                      Sautó</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 75       Soanyes i Marians                    Soanyes</span>
@@ -116,11 +119,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 117                 Bonpàs                     Bompàs</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 125                  Canet          Canet de Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 130                Cervera      Cervera de la Marenda</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132                Corbera        Corbera de Rosselló</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133      Corbera la Cabana       la Cabana de Corbera</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145               l'Albera                   L'Albera</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133      Corbera la Cabana     Corbera de les Cabanes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 147    la Roca de l'Albera           la Roca d'Albera</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148     la Torre del Bisbe            la Torre d'Elna</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 154             Montesquiu        Montesquiu d'Albera</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 168       Pontellà i Nyils                   Pontellà</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 175            Sant Cebrià    Sant Cebrià de Rosselló</span>
@@ -128,8 +128,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 184            Sant Nazari    Sant Nazari de Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 185           Santa Coloma       Santa Coloma de Tuïr</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 193              Torrelles    Torrelles de la Salanca</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 201        Vilanova de Raó            Vilanova de Raò</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 203      Prunet i Bellpuig           Prunet i Belpuig</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 207                Custoja                    Costoja</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 215         Prats de Molló Prats de Molló i la Presta</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 217 Sant Joan Pla de Corts    Sant Joan de Pladecorts</span>
@@ -139,7 +137,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15            Font-Romeu-Odeillo-Via Alta Cerdanya</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 32                           Casteil      Conflent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 37                             Conat      Conflent</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39                         Los Masos      Conflent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 43                               Eus      Conflent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 63                                Py      Conflent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 70                             Sansa      Conflent</span>
@@ -152,11 +149,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 117                           Bompas      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 125              Canet-en-Roussillon      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 130                          Cerbère      Rosselló</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132                          Corbère      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 133              Corbère-les-Cabanes      Rosselló</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145                         L'Albère      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 147              Laroque-des-Albères      Rosselló</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148                  Latour-Bas-Elne      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 154          Montesquieu-des-Albères      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 168                        Ponteilla      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 175                    Saint-Cyprien      Rosselló</span>
@@ -164,8 +158,6 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 184                    Saint-Nazaire      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 185 Sainte-Colombe-de-la-Commanderie      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 193                       Torreilles      Rosselló</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 201            Villeneuve-de-la-Raho      Rosselló</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 203                Prunet-et-Belpuig      Rosselló</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 207                       Coustouges     Vallespir</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 215         Prats-de-Mollo-la-Preste     Vallespir</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 217          Saint-Jean-Pla-de-Corts     Vallespir</span>
