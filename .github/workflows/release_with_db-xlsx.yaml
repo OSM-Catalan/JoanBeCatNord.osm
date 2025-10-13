@@ -51,6 +51,18 @@ jobs:
               next
             }
 
+            if (!is.data.frame(d[[i]])) {
+              # Fix error due to long tab names
+              names(d[[i]]) <- substr(names(d[[i]]), 1, 31)
+
+              ## Project specific:
+              d[[i]] <- lapply(d[[i]], function(x) {
+                names(x) <- gsub(" ", "_", names(x))
+                names(x) <- gsub("\\(|\\)", "", names(x))
+                x
+              })
+            }
+
             filename <- paste0(names(d)[i], ".xlsx")
             message("Writing: ", filename)
 
