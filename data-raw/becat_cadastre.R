@@ -6,13 +6,22 @@ cadastres <- lapply(fitxers, pdftools::pdf_text) # equivalent a `pdftotext -layo
 sapply(cadastres, length)
 names(cadastres) <- gsub("^data-raw/pdf/|\\.pdf$", "", fitxers)
 
+table(unlist(sapply(cadastres, Encoding)))
+table(unlist(sapply(cadastres, stringi::stri_trans_isnfc)))
+table(unlist(lapply(cadastres, function(x) {
+  unique(do.call(rbind, lapply(stringi::stri_enc_detect(x), function(y) y[1, "Encoding"])))
+})))
+table(unlist(lapply(cadastres, function(x) stringi::stri_enc_isutf8(x))))
+# lapply(cadastres, function(x) unique(do.call(rbind, lapply(stringi::stri_enc_detect(x), function(y) y[1, ]))))
+# CONCLUSIÓ: Tot codificat a UTF-8 i normalitzat a NFC (W3C Specifications recommend using NFC for all content)
+
 files <- lapply(cadastres, lapply, function(x) {
   # x <- gsub("(\\n)+[0-9]+", "", x) # treu números de pàgina (no afecta ncol i es pot usar de nom d'element)
   # x <- gsub("^\\s+[A-Z]\\n", "", x) # treu posició de l'abecedari
   # x <- gsub("[ ]{2,}", "\t", x) # afegeix \t com a separadors de columnes
 
   if (length(x) == 0 || x %in% c(NA, "", "\\n")) {
-    return(data.frame())
+    return(character())
   }
 
   # read.table(text = x, header = FALSE, sep = "\t", row.names = NULL, fill = TRUE, encoding = "UTF-8")
@@ -30,15 +39,17 @@ files <- lapply(files, function(x) {
 ## Números de pàgina ----
 
 ## Extreu dels documents
-sapply(files, sapply, function(x) {
+tmp <- sapply(files, sapply, function(x) {
   # pag <- apply(x, 2, function(y) grep("^[0-9]+$", y, value = TRUE))
   # unlist(pag)
   pag <- gsub("\\s+", "", x[1])
 })
-## CONCLUSIONS: els números extrets coicideixen amb els noms ja afegits
+tmp
+all(mapply(function(val, nom) all(gsub("^pag", "", nom) == val), val = tmp, nom = lapply(tmp, names)))
+## CONCLUSIONS: els números extrets coincideixen amb els noms ja afegits
 
 ## Elimina
-sapply(files, sapply, function(x) x[1])
+unique(sapply(files, sapply, function(x) gsub("\\s+", "", x[1])))
 ## CONCLUSIÓ: elimina totes les primeres files (només contenen números)
 
 files <- lapply(files, function(x) {
@@ -113,7 +124,9 @@ comarques$municipi <- sapply(strsplit(comarques$municipi_pdf, " "), function(x) 
   # out <- gsub("D'amunt", "d'Amunt", out)
 })
 grep(" ", comarques$municipi, value = TRUE)
-# TODO: Le Vivier (francès) -> , Pesilhan de Conflent (occità) -> Pesillà de Conflent
+# Tesaurus: Le Vivièr (francès) -> El Viver, Pesilhan de Conflent (occità) -> Pesillà de Conflent
+comarques[grep("Vivièr|Pesilhan", comarques$municipi), ]
+tesaurus_municipis[grep("Vivièr|Pesilhan", tesaurus_municipis$becat_nom), ]
 
 print(comarques[toupper(comarques$municipi_pdf) != toupper(comarques$nom_fitxer), ], quote = TRUE)
 
@@ -129,6 +142,15 @@ table(comarques$comarca)
 ## CONCLUSIONS: Algunes comarques mal agafades en municipis que ocupen > 1 línies. Corregit
 
 comarques <- comarques[, c("municipi", "comarca", "municipi_pdf", "comarca_pdf", "nom_fitxer")]
+
+compareDF::view_html(compareDF::compare_df(
+  comarques,
+  JoanBeCatNord.osm::comarques # , group_col = "osm_id"
+))
+identical(comarques, JoanBeCatNord.osm::comarques)
+sapply(comarques, Encoding)
+sapply(JoanBeCatNord.osm::comarques, Encoding)
+
 usethis::use_data(comarques, overwrite = TRUE)
 
 openxlsx::write.xlsx(
@@ -136,7 +158,6 @@ openxlsx::write.xlsx(
   file = "data-raw/comarques.xlsx", rowNames = FALSE, borders = "surrounding", colWidths = "auto",
   firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
 )
-readODS::write_ods(comarques, path = "data-raw/comarques.ods", row_names = FALSE)
 
 
 ### Altres dades (data, autors, estat a l'IGN) ----
@@ -161,7 +182,9 @@ intro_cadastre <- lapply(files, function(x) {
   if (length(inici) > 0 && length(fi) > 0) {
     intro_cadastre <- intro_cadastre[(inici[1] + 1):(fi[1] - 1)]
   } else {
-    warning("Falta algun límit a ", paste(intro_cadastre[1:max(c(inici, 1))], collapse = " "), ": inici=", inici, "; fi=", fi)
+    warning(
+      "Falta algun límit a ", paste(intro_cadastre[1:max(c(inici, 1))], collapse = " "), ": inici=", inici, "; fi=", fi
+    )
   }
 
   return(intro_cadastre)
@@ -254,6 +277,10 @@ names(intro_cadastre) <- noms_corregits
 
 ### Desa intro_cadastre ----
 
+identical(intro_cadastre, JoanBeCatNord.osm::intro_cadastre)
+sapply(intro_cadastre, Encoding)
+sapply(JoanBeCatNord.osm::intro_cadastre, Encoding)
+
 usethis::use_data(intro_cadastre, overwrite = TRUE)
 load("data/intro_cadastre.rda", verbose = TRUE)
 
@@ -306,8 +333,14 @@ cerca_inici_columnes <- function(inicis) {
 
 taula <- lapply(files, function(x) {
   out_pag <- lapply(x, function(p) {
-    inicis_columnes <- gregexec("^\\s*([0-9A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-])", p)
-    # inici_columnes <- regexec("^\\s*([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-])", p)
+    inicis_columnes <- gregexec(
+      "^\\s*([0-9A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-])",
+      p
+    )
+    # inici_columnes <- regexec(
+    #   "^\\s*([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-]).+\\s{2,}([A-Za-zÀ-Úà-ú-])",
+    #   p
+    # )
     inici_columnes <- cerca_inici_columnes(inicis_columnes)
 
     if (is.na(inici_columnes[1])) { # menys de 4 columnes
@@ -380,7 +413,8 @@ taula <- lapply(taula, function(x) {
 unique(lapply(taula, function(x) data.frame(lapply(x[1:5, ], trimws))))
 
 unique(lapply(taula, function(x) grep("(Noms de|Seccions|Sections)", x[, 1])[1]))
-## CONCLUSIONS: capçaleres ben situades a les línies 1:3 però amb certa variabilitat. Acaben a les línies 4:5|6 amb nom de la secció.
+## CONCLUSIONS: capçaleres ben situades a les línies 1:3 però amb certa variabilitat.
+# Acaben a les línies 4:5|6 amb nom de la secció.
 
 taula <- lapply(taula, function(x) {
   fi_capçalera <- grep("(Noms de|Seccions|Sections)", x[1:10, 1])[1]
@@ -396,6 +430,7 @@ lapply(taula, head)
 
 
 # FET! Punt segur ----
+
 taula0 <- taula
 # save(taula0, file = "data/part/taula0.RData", compress = "xz")
 load("data/part/taula0.RData", verbose = TRUE) # taula0
@@ -403,8 +438,10 @@ taula <- taula0
 
 
 ## Arregla les files amb múltiples línies ----
-## NOTA: els espais al principi i final de columna NO són útils. Depenen de si hi ha contingut o no a les columnes posteriors.
-## línia amb "^\\s+$" a la primera columna. Tb hi ha alguns valors multilínia a la primera columna que comencen per "^\\s+/" o que la línia anterior acaba amb "/\\s+$"
+## NOTA: els espais al principi i final de columna NO són útils. Depenen de si hi ha contingut o no a les columnes
+# posteriors.
+## línia amb "^\\s+$" a la primera columna. Tb hi ha alguns valors multilínia a la primera columna que comencen per
+# "^\\s+/" o que la línia anterior acaba amb "/\\s+$"
 lapply(taula, function(x) {
   segona_línia <- grep("(^\\s+$|^\\s*/)", x[, 1])
   multilínia <- grep("/\\s*$", x[, 1])
@@ -548,10 +585,14 @@ tipus_errors <- lapply(taula, function(x) {
 })
 tipus_errors <- tipus_errors[sapply(tipus_errors, length) > 0]
 tipus_errors
-## CONCLUSIONS: errors degut a seccions sensals partides en més d'una línia sense acabar o que comença amb / i cap altra columna amb més d'una línia
+## CONCLUSIONS: errors degut a seccions sensals partides en més d'una línia sense acabar o que comença amb / i cap altra
+# columna amb més d'una línia
 
 taula[names(tipus_errors)] <- lapply(taula[names(tipus_errors)], function(x) {
-  err <- which(grepl("/|[0-9]|^\\s*[A-Z]\\s*$|^\\s*[A-Z] [A-Za-z]", x[, 1]) & apply(x[, -1], 1, function(y) all(grepl("^\\s*$", y))))
+  err <- which(
+    grepl("/|[0-9]|^\\s*[A-Z]\\s*$|^\\s*[A-Z] [A-Za-z]", x[, 1]) &
+      apply(x[, -1], 1, function(y) all(grepl("^\\s*$", y)))
+  )
   while (length(err) > 0) {
     if (length(err) > 1 && any(diff(err) == 1)) {
       stop("Errors de amb més d'una línia")
@@ -567,7 +608,10 @@ taula[names(tipus_errors)] <- lapply(taula[names(tipus_errors)], function(x) {
     x[err - 1, 1] <- sapply(strsplit(línia, " "), function(y) y[1])
     x[err, 1] <- sapply(strsplit(trimws(x[err, 1]), " "), function(y) paste(y[-1], collapse = " "))
 
-    err <- which(grepl("/|[0-9]|^\\s*[A-Z]\\s*$|^\\s*[A-Z] [A-Za-z]", x[, 1]) & apply(x[, -1], 1, function(y) all(grepl("^\\s*$", y) | is.na(y))))
+    err <- which(
+      grepl("/|[0-9]|^\\s*[A-Z]\\s*$|^\\s*[A-Z] [A-Za-z]", x[, 1]) &
+        apply(x[, -1], 1, function(y) all(grepl("^\\s*$", y) | is.na(y)))
+    )
   }
 
   # sel <- which(apply(x[, -1], 1, function(y) all(grepl("^\\s*$", y))))
@@ -577,7 +621,8 @@ taula[names(tipus_errors)] <- lapply(taula[names(tipus_errors)], function(x) {
 })
 
 
-## Línies pendents que tenien la primera columna multilínia i alguna altre també. Buscar valors acabats en -\\s*$ (e.g. taula$$`Vilallonga de la Salanca`["pag3.23", ])
+## Línies pendents que tenien la primera columna multilínia i alguna altre també. Buscar valors acabats en -\\s*$ (e.g.
+# taula$$`Vilallonga de la Salanca`["pag3.23", ])
 multilínia_pendent <- lapply(taula, function(x) {
   multilínia <- which(apply(x[, -1], 1, function(y) any(grepl("[A-ZÀ-Úa-zà-ú]-\\s*$", y))))
   x[sort(c(multilínia, multilínia + 1)), ]
@@ -587,20 +632,27 @@ print(multilínia_pendent, quote = TRUE)
 
 ### TODO: REPORT guio final sense sentit a l'original ----
 taula$Oceja["pag7.3", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"]
-taula$Oceja["pag7.3", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"] <- gsub("-$", "", taula$Oceja["pag7.3", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"])
+taula$Oceja["pag7.3", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"] <-
+  gsub("-$", "", taula$Oceja["pag7.3", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"])
 
-corregit <- paste(trimws(taula$`Vilallonga de la Salanca`[c("pag3.22", "pag3.23"), "TOPÒNIMS I FULLS CADASTRALS"]), collapse = "")
+corregit <- paste(
+  trimws(taula$`Vilallonga de la Salanca`[c("pag3.22", "pag3.23"), "TOPÒNIMS I FULLS CADASTRALS"]),
+  collapse = ""
+)
 corregit
 taula$`Vilallonga de la Salanca`["pag3.22", "TOPÒNIMS I FULLS CADASTRALS"] <- corregit
 
-corregit <- paste(trimws(taula$`Vilallonga de la Salanca`[c("pag3.22", "pag3.23"), "NOM SOBRE EL CADASTRE ANTERIOR"]), collapse = "")
+corregit <- paste(
+  trimws(taula$`Vilallonga de la Salanca`[c("pag3.22", "pag3.23"), "NOM SOBRE EL CADASTRE ANTERIOR"]),
+  collapse = ""
+)
 corregit
 taula$`Vilallonga de la Salanca`["pag3.22", "NOM SOBRE EL CADASTRE ANTERIOR"] <- corregit
 
 taula$`Vilallonga de la Salanca`[c("pag3.22", "pag3.23"), ]
 taula$`Vilallonga de la Salanca`["pag3.23", ] <- NA
 
-### CONCLUSIONS: poden quedar més casos de línies múltiples emmascarades per valors múltiples en la primera i altres columnes ----
+### CONCLUSIONS: TODO poden quedar més casos de línies múltiples emmascarades per valors múltiples en la primera i altres columnes ----
 
 
 ## Noms de seccions cadastrals ----
@@ -665,7 +717,9 @@ taula$`Pesillà de la Ribera`[sel, ] <- corregit
 
 x$`Sant Llorenç de la Salanca`
 sel <- grep("/A\\s+$", taula$`Sant Llorenç de la Salanca`[, 1])
-corregit <- trimws(paste(trimws(taula$`Sant Llorenç de la Salanca`[sel, ]), trimws(taula$`Sant Llorenç de la Salanca`[sel + 1, ])))
+corregit <- trimws(paste(
+  trimws(taula$`Sant Llorenç de la Salanca`[sel, ]), trimws(taula$`Sant Llorenç de la Salanca`[sel + 1, ])
+))
 corregit[1] <- gsub(" ", "", corregit[1])
 corregit
 
@@ -674,7 +728,9 @@ taula$`Sant Llorenç de la Salanca`[sel, ] <- corregit
 
 sel <- grep("/B\\s+$", taula$`Sant Llorenç de la Salanca`[, 1])
 taula$`Sant Llorenç de la Salanca`[sort(sel + 0:1), ]
-corregit <- trimws(paste(trimws(taula$`Sant Llorenç de la Salanca`[sel, ]), trimws(taula$`Sant Llorenç de la Salanca`[sel + 1, ])))
+corregit <- trimws(paste(
+  trimws(taula$`Sant Llorenç de la Salanca`[sel, ]), trimws(taula$`Sant Llorenç de la Salanca`[sel + 1, ])
+))
 corregit[1] <- gsub(" ", "", corregit[1])
 corregit
 
@@ -759,7 +815,7 @@ codisU <- setdiff(trimws(unique(unlist(codis))), "")
 
 minuscules <- grep("[a-z]", codisU, value = TRUE)
 minuscules[order(nchar(minuscules))]
-## CONCLUSIONS: totes els valors amb minúscules són correctes o són tipus. Treul-los
+## CONCLUSIONS: totes els valors amb minúscules són correctes o són tipus. Treu-los
 codisU <- grep("[a-z]", codisU, value = TRUE, invert = TRUE)
 
 codisU[order(nchar(codisU))]
@@ -784,7 +840,8 @@ taula$`el Voló`[, 1] <- gsub("\\.a1", "A1", taula$`el Voló`[, 1]) # TODO: REPO
 taula$Terrats[, 1] <- gsub("-", "/", taula$Terrats[, 1])
 taula$`Òpol i Perellós`[, 1] <- gsub("-E1", "E1", taula$`Òpol i Perellós`[, 1]) # TODO: REPORT
 taula$`Sant Llorenç de la Salanca`[, 1] <- gsub("\\.B", "B", taula$`Sant Llorenç de la Salanca`[, 1]) # TODO: REPORT
-taula$`Angostrina i Vilanova de les Escaldes`[, 1] <- gsub("\\.D3", "D3", taula$`Angostrina i Vilanova de les Escaldes`[, 1]) # TODO: REPORT
+taula$`Angostrina i Vilanova de les Escaldes`[, 1] <-
+  gsub("\\.D3", "D3", taula$`Angostrina i Vilanova de les Escaldes`[, 1]) # TODO: REPORT
 taula$Baixàs[, 1] <- gsub("\\.A3", "A3", taula$Baixàs[, 1]) # TODO: REPORT
 taula$Cortsaví[, 1] <- gsub("úC2", "C2", taula$Cortsaví[, 1]) # TODO: REPORT
 # taula$Cortsaví[, 1] <- gsub("A·", "A?", taula$Cortsaví[, 1]) # TODO: REPORT No és clar si cau a A3 o a A2
@@ -981,7 +1038,7 @@ load("data/part/taula1.RData", verbose = TRUE) # taula1
 taula <- taula1
 
 
-## Elimina files buides, cel·les buides com a NAs i trimws ----
+## **TRIMWS, elimina files buides i cel·les buides com a NAs** ----
 
 taula <- lapply(taula, function(x) {
   x[] <- apply(x, 2, function(y) {
@@ -1332,6 +1389,157 @@ corregit
 d[sel, ]
 d[sel, ] <- corregit
 taula$Trevilhac <- d
+
+
+## TODO: possibles errors pendents no detectables amb guions duplicats en files sense guions (cel·les buides)
+
+
+## Corregeix parèntesis desaparellats ----
+
+## Amb parèntesis
+valors <- unlist(lapply(taula, function(x) {
+  gsub(
+    ".*(\\(.+\\))", "\\1",
+    # x[apply(x, 1, function(y) any(grepl("\\(|\\)", y))), apply(x, 2, function(y) any(grepl("\\(|\\)", y)))]
+    grepv("\\(|\\)", unlist(x))
+  )
+}))
+table(valors)
+grepv(")$", valors, invert = TRUE)
+
+pars2 <- unlist(lapply(taula, function(x) { # 2 parentesis iguals
+  unique(c(grepv("\\(.*\\(", unlist(x)), grepv("\\).*\\)", unlist(x))))
+}))
+pars2
+## CONCLUSIÓ: només hi ha un cas amb més d'un grup de parèntesis i és un error a corregir
+sel <- apply(taula$`Argelers de la Marenda`, 1, function(x) any(grepl("Ansa", x)))
+taula$`Argelers de la Marenda`[sel, ]
+val <- taula$`Argelers de la Marenda`$`NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)`[sel]
+taula$`Argelers de la Marenda`$`NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)`[sel] <- gsub("^\\(", "", val)
+
+
+### Parèntesis no aparellats ----
+
+test <- lapply(taula, function(x) {
+  sel_despar <- apply(x, 1, function(ch) {
+    any(grepl("\\(", ch) != grepl("\\)", ch))
+  })
+  x[sel_despar, ]
+})
+test <- test[sapply(test, nrow) > 0]
+test
+## CONCLUSIÓ: falta tancar els parèntesis en els pdf. Corregir
+# TODO: REPORT `el Barcarès` pag3.5 "Pointe de Coudalère (Punta de Codalera"
+# TODO: REPORT `la Tor de Querol` pag5.10 "Riu Tartarès (Ravin"
+# TODO: REPORT Portvendres pag5.5 "Mas Rovira (Mas d’en Rovira"
+
+taula$`el Barcarès`["pag3.5", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"]
+taula$`el Barcarès`["pag3.5", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"] <-
+  paste0(taula$`el Barcarès`["pag3.5", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"], ")")
+
+taula$`la Tor de Querol`["pag5.10", "NOM SOBRE EL CADASTRE ACTUAL"]
+taula$`la Tor de Querol`["pag5.10", "NOM SOBRE EL CADASTRE ACTUAL"] <-
+  paste0(taula$`la Tor de Querol`["pag5.10", "NOM SOBRE EL CADASTRE ACTUAL"], ")")
+
+taula$Portvendres["pag5.5", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"]
+taula$Portvendres["pag5.5", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"] <-
+  paste0(taula$Portvendres["pag5.5", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"], ")")
+
+
+## TODO: repassar caràcters especials i corregir ----
+
+valors <- grepv("[^a-zA-ZÀÁÈÉÍÏÓÒÚÜÇàáèéíïóòúüç0-9 ()']", unlist(lapply(taula, function(x) x[, -1])))
+sort(table(valors), decreasing = TRUE)[1:100]
+unique(valors)
+
+sort(table(unlist(stringr::str_extract_all(unlist(taula), "[^a-zA-ZÀÁÈÉÍÏÓÒÚÜÇàáèéíïóòúüç0-9 ()']"))))
+
+valors <- grepv("[^a-zA-ZÀÁÈÉÍÏÓÒÚÜÇàáèéíïóòúüç0-9 ()'/º:âêëîôûùýÿ-]", unlist(lapply(taula, function(x) x[, -1])))
+# sort(table(valors))
+valors <- unique(valors)
+valors
+grepv("\\.", valors, invert = TRUE)
+
+## Caràcters francesos inclosos (repassar per columnes)
+valors <- apply(do.call(rbind, lapply(taula, as.matrix)), 2, function(x) grepv("[âêîôûùýÿ]", x))
+unique(valors)
+
+
+## caràcters especial a inici o fi
+grepv("[^a-zA-ZÀÁÈÉÍÏÓÒÚÜÇàáèéíïóòúüç0-9 ()']$", unlist(lapply(taula, function(x) x[, -1])))
+grepv("^[^a-zA-ZÀÁÈÉÍÏÓÒÚÜÇàáèéíïóòúüç0-9 ()']", unlist(lapply(taula, function(x) x[, -1])))
+## CONCLUSIÓ: Elimina els que no són abreviacions
+
+sel <- grep("Nahuja\\)\\.", taula$Naüja$`NOM SOBRE EL CADASTRE ACTUAL`)
+taula$Naüja$`NOM SOBRE EL CADASTRE ACTUAL`[sel] <- gsub("\\.$", "", taula$Naüja$`NOM SOBRE EL CADASTRE ACTUAL`[sel])
+
+sel <- grep("Pla de la Creu Verda", taula$Trasserra$`NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)`)
+taula$Trasserra$`NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)`[sel] <-
+  gsub("^\\^", "", taula$Trasserra$`NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)`[sel])
+
+
+
+### Camps amb punt -> NA ----
+test <- lapply(taula, function(x) {
+  x[apply(x, 1, function(y) any(grepl("^\\.$", y))), ]
+})
+test <- test[sapply(test, nrow) > 0]
+test
+## CONCLUSIONS: són camps buits. Passa a NA
+taula[names(test)] <- lapply(taula[names(test)], function(x) {
+  x[] <- lapply(x, function(y) {
+    y[grep("^\\.$", y)] <- NA_character_
+    y
+  })
+  x
+})
+
+
+### Normalitza apòstrof ----
+taula <- lapply(taula, function(x) {
+  x[] <- lapply(x, function(y) gsub("[‘’]", "'", y))
+  x
+})
+
+
+### Normalitza º ----
+valors <- grepv("[°²ª]", unlist(lapply(taula, function(x) x[, -1])))
+sort(table(valors), decreasing = TRUE)[1:100]
+unique(valors)
+# CONCLUSIONS: [Nn][°²ªº]-> nº
+
+taula <- lapply(taula, function(x) {
+  x[] <- lapply(x, function(y) gsub("[Nn][°²ª]", "nº", y))
+  x
+})
+
+
+### Errors varis ----
+test <- lapply(taula, function(x) x[apply(x, 1, function(y) any(grep("Salñ|,l'Alba|Pinosa,ou", y))), ])
+test <- test[sapply(test, nrow) > 0]
+test
+# TODO: REPORT
+# taula$Mentet["pag5.12", ] Pinosa,ou -> Pinosa, ou
+# taula$Molig["pag3.4", ] -> "Salñ del Gaill" -> "Salt del Gaill"
+# taula$Oms["pag5.7", ] "Mas de ,l'Alba" -> "Mas de l'Alba"
+
+taula$Mentet["pag5.12", "NOM SOBRE EL CADASTRE ACTUAL CORREGIT"] <- gsub(
+  " Pinosa,ou ",
+  " Pinosa, ou ",
+  taula$Mentet["pag5.12", "NOM SOBRE EL CADASTRE ACTUAL CORREGIT"]
+)
+taula$Molig["pag3.4", "NOM DEL CADASTRE ANTERIOR I SOBRE EL CADASTRE ACTUAL"] <- gsub(
+  "Salñ del Gaill",
+  "Salt del Gaill",
+  taula$Molig["pag3.4", "NOM DEL CADASTRE ANTERIOR I SOBRE EL CADASTRE ACTUAL"]
+)
+taula$Oms["pag5.7", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"] <- gsub(
+  "Mas de ,l'Alba",
+  "Mas de l'Alba",
+  taula$Oms["pag5.7", "NOM SOBRE GEOPORTAIL (portal cartogràfic de l’IGN)"]
+)
+
+
 ## Corregeix tipus multicolumna ----
 
 tipus <- lapply(taula, function(x) x[apply(x[, -1], 1, function(y) all(is.na(y))), 1])
@@ -1352,8 +1560,10 @@ test <- lapply(taula, function(x) {
 })
 test <- test[sapply(test, nrow) > 0]
 grep("corregit", unlist(tipus), value = TRUE)
-# CONCLUSIONS: errors degut a notes en columnes 2:3 ("NOMS NO CORREGITS", "NOMS CORREGITS"). Afegir al tipus + no corregit/corregit
-# NOMS CORREGIT inclou valors a la columna `NOM SOBRE EL CADASTRE ACTUAL CORREGIT` i NOMS NO CORREGITS només a Sant Esteve del Monestir
+# CONCLUSIONS: errors degut a notes en columnes 2:3 ("NOMS NO CORREGITS", "NOMS CORREGITS"). Afegir al tipus + no
+# corregit/corregit
+# NOMS CORREGIT inclou valors a la columna `NOM SOBRE EL CADASTRE ACTUAL CORREGIT` i NOMS NO CORREGITS només a Sant
+# Esteve del Monestir
 
 taula[names(test)] <- lapply(taula[names(test)], function(x) {
   sel <- grep("^cadastrals$", x[, 1])
@@ -1393,13 +1603,18 @@ taula <- taula2
 
 
 ## Divideix taules amb capçaleres intermèdies ----
+test <- lapply(taula, function(x) grepv("^TOP", x[, 1]))
+test <- test[sapply(test, length) > 0]
+unique(test)
 
 capçalera <- lapply(taula, function(x) {
   x[grep("^TOPÒNIMS", x[, 1]), ]
 })
 capçalera <- capçalera[sapply(capçalera, nrow) > 0]
 capçalera
-noms_col <- lapply(capçalera, function(x) matrix(c(names(x)[-5], x[, -5]), ncol = 4, byrow = TRUE, dimnames = list(c("capçalera", "intermitja"), 1:4)))
+noms_col <- lapply(capçalera, function(x) {
+  matrix(c(names(x)[-5], x[, -5]), ncol = 4, byrow = TRUE, dimnames = list(c("capçalera", "intermitja"), 1:4))
+})
 apply(do.call(rbind, noms_col), 2, unique)
 
 lapply(noms_col, function(x) x[, 2:3])
@@ -1492,6 +1707,35 @@ taula <- taula3
 ## Desa ----
 
 becat_cadastre <- taula
+
+identical(becat_cadastre, JoanBeCatNord.osm::becat_cadastre)
+# igual nrow
+table(sapply(names(becat_cadastre), function(x) {
+  nrow(becat_cadastre[[x]]) == nrow(JoanBeCatNord.osm::becat_cadastre[[x]])
+}))
+
+dif_vals <- lapply(names(becat_cadastre), function(x) {
+  list(
+    dif1 = sort(setdiff(unlist(becat_cadastre[[x]]), unlist(JoanBeCatNord.osm::becat_cadastre[[x]]))),
+    dif2 = sort(setdiff(unlist(JoanBeCatNord.osm::becat_cadastre[[x]]), unlist(becat_cadastre[[x]])))
+  )
+})
+dif_vals[sapply(dif_vals, function(x) length(x[[1]]) != length(x[[2]]))]
+
+dif <- lapply(names(becat_cadastre), function(x) {
+  try(compareDF::compare_df(
+    becat_cadastre[[x]],
+    JoanBeCatNord.osm::becat_cadastre[[x]] # , group_col = "osm_id"
+  ))
+})
+dif <- dif[sapply(dif, class) != "try-error"]
+# dif
+compareDF::view_html(dif[[1]])
+
+table(unlist(sapply(becat_cadastre, sapply, Encoding)))
+table(unlist(sapply(JoanBeCatNord.osm::becat_cadastre, sapply, Encoding)))
+
+
 usethis::use_data(becat_cadastre, overwrite = TRUE)
 
 becat_xlsx <- becat_cadastre
@@ -1502,13 +1746,11 @@ becat_xlsx <- lapply(becat_xlsx, function(x) {
   x
 })
 
-
 openxlsx::write.xlsx(
   becat_xlsx,
   file = "data-raw/becat_cadastre.xlsx", rowNames = TRUE, borders = "surrounding", colWidths = "auto",
   firstRow = TRUE, headerStyle = openxlsx::createStyle(textDecoration = "BOLD")
 )
-readODS::write_ods(becat_xlsx, path = "data-raw/becat_cadastre.ods", row_names = TRUE)
 
 
 
